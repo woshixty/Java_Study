@@ -1,0 +1,18 @@
+INDEX VERSION 1.131+/Users/mr.stark/Desktop/java/.metadata/.plugins/org.eclipse.jdt.core
+1347013504.index
+416503890.index
+975863295.index
+1277319819.index
+3494014194.index
+2806415069.index
+1525840469.index
+2527578615.index
+1375964667.index
+3051161193.index
+262407347.index
+3930594920.index
+3966946837.index
+1063346127.index
+1723154816.index
+639159619.index
+2167183244.index
