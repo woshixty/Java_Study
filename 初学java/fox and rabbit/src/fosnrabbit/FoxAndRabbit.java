@@ -109,6 +109,6 @@ public class FoxAndRabbit {
 
     public static void main(String[] args) {
         FoxAndRabbit fnr = new FoxAndRabbit(50);
-		fnr.start(300);
+        fnr.start(300);
     }
 }

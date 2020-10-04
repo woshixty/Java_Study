@@ -21,11 +21,11 @@ public class Test implements Servlet {
 
     @Override
     public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-        
+
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 
-        String method =httpServletRequest.getMethod();
-        System.out.println(method+" 请求");
+        String method = httpServletRequest.getMethod();
+        System.out.println(method + " 请求");
     }
 
     @Override
