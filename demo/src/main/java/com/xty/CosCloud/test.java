@@ -18,8 +18,8 @@ public class test {
 
     public static void main(String[] args) {
 
-        String secretId="AKIDSgh9KBGAF3rzuYt9PO6XjfQxKmwqEpNd";
-        String secretKey="815sOldNo3ye48JHynwta3FBqxuBAsKb";
+        String secretId="";
+        String secretKey="";
 
         //初始化用户身份信息
         COSCredentials credentials = new BasicCOSCredentials(secretId, secretKey);

@@ -25,8 +25,8 @@ import java.util.UUID;
 @RequestMapping("/cos")
 @Slf4j
 public class CosTest {
-    private String secretId="AKIDSgh9KBGAF3rzuYt9PO6XjfQxKmwqEpNd";
-    private String secretKey="815sOldNo3ye48JHynwta3FBqxuBAsKb";
+    private String secretId="";
+    private String secretKey="";
 
     @GetMapping("/hello")
     public void helloworld() {
