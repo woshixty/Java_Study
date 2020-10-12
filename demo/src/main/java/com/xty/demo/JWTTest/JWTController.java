@@ -55,7 +55,13 @@ public class JWTController {
     }
 
     @PostMapping("/verify")
+
+
     public Map<String, Object> test(String token) {
+        /*
+
+        //验证token不再需要我们，我们处理业务逻辑即可，交由拦截器来做
+
         Map<String, Object> map = new HashMap<>();
         log.info("当前token为[{}]", token);
         try {
@@ -77,8 +83,12 @@ public class JWTController {
         }
         map.put("status", false);
         return map;
+        */
+        Map<String, Object> map = new HashMap<>();
+        //处理自己的业务逻辑
+        map.put("status", false);
+        map.put("msg", "请求成功");
+        return map;
     }
-
-
 
 }
