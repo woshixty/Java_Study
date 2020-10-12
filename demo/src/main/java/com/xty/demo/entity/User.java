@@ -1,6 +1,7 @@
 package com.xty.demo.entity;
 
 import lombok.Data;
+import javax.persistence.Id;
 
 /**
  * @author qyyzxty@icloud.com
@@ -8,8 +9,10 @@ import lombok.Data;
  **/
 @Data
 public class User {
+    @Id
     private Long id;
     private String name;
     private Integer age;
     private String email;
+    private String passwd;
 }
