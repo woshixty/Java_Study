@@ -6,8 +6,6 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xty.demo.utils.JWTUtils;
-import net.bytebuddy.dynamic.scaffold.MethodRegistry;
-import org.apache.http.HeaderIterator;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

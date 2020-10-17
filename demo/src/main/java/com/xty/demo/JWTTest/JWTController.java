@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,11 +57,9 @@ public class JWTController {
     }
 
     @PostMapping("/verify")
+    public Map<String, Object> test(HttpServletRequest request) {
 
-
-    public Map<String, Object> test(String token) {
         /*
-
         //验证token不再需要我们，我们处理业务逻辑即可，交由拦截器来做
 
         Map<String, Object> map = new HashMap<>();
@@ -86,8 +86,13 @@ public class JWTController {
         */
         Map<String, Object> map = new HashMap<>();
         //处理自己的业务逻辑
-        map.put("status", false);
-        map.put("msg", "请求成功");
+        map.put("status", true);
+        map.put("msg", "请求成功！！！");
+
+        String token = request.getHeader("token");
+        DecodedJWT verify = JWTUtils.verify(token);
+        log.info("用户id: [{}]", verify.getClaim("id"));
+        log.info("用户name: [{}]", verify.getClaim("name"));
         return map;
     }
 

@@ -1,15 +1,16 @@
-package com.xty.demo.mybaitsPlus;
+package com.example.mybaitsplus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 /**
  * @author qyyzxty@icloud.com
- * 2020/10/12
+ * 2020/10/14
  **/
 
 @Data

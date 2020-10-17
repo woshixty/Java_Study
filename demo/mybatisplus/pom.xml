@@ -8,19 +8,17 @@
         <version>2.3.4.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.xty</groupId>
-    <artifactId>demo</artifactId>
+    <groupId>com.example</groupId>
+    <artifactId>mybatisplus</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
+    <name>mybatisplus</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
         <java.version>1.8</java.version>
-        <kotlin.version>1.4.10</kotlin.version>
     </properties>
 
     <dependencies>
-
         <dependency>    <!-- mybaits_plus -->
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
@@ -119,6 +117,13 @@
             <version>3.10.3</version>
         </dependency>
 
+<!--        mybaits-->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.5</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -126,27 +131,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>testCompile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
