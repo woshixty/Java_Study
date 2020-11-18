@@ -47,6 +47,20 @@ public class JWTUtils {
         return JWT.require(Algorithm.HMAC256(SIGN)).build().verify(token);  //一旦有错误，便会爆出异常
     }
 
+    public static void main(String[] args) {
+
+        Calendar instance = Calendar.getInstance();
+        instance.add(Calendar.DATE, 100);    //默认7天过期
+
+        //创建JWT builder
+        JWTCreator.Builder builder = JWT.create();
+        builder.withClaim("userId",1);
+
+        String token = builder.withExpiresAt(instance.getTime())  //指定令牌过期时间
+                .sign(Algorithm.HMAC256("qwerasdfzxcv"));  //sign
+
+        System.out.println(token);
+    }
 
     /*
      * 其实验证与返回 DecodedJWT 可以用一个函数

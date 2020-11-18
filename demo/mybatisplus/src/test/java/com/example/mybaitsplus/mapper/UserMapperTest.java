@@ -165,7 +165,4 @@ public class UserMapperTest {
         list.forEach(System.out::println);
 //        System.out.println(user);
     }
-
-
-
 }

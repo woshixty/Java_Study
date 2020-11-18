@@ -19,7 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6e5d8ec4-1059-4870-a49c-087ac85e70fc" name="Default Changelist" comment="" />
+    <list default="true" id="6e5d8ec4-1059-4870-a49c-087ac85e70fc" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -48,6 +50,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/demo" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -56,7 +59,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
-  <component name="RunManager" selected="Application.HelloWorld">
+  <component name="RunManager" selected="Spring Boot.DemoApplication">
     <configuration name="HelloWorld" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.demo.HelloWorld" />
       <module name="Java_Study" />
@@ -95,6 +98,7 @@
       <updated>1601799260925</updated>
       <workItem from="1601799277342" duration="385000" />
       <workItem from="1601899838572" duration="28000" />
+      <workItem from="1604110108388" duration="63000" />
     </task>
     <servers />
   </component>
@@ -114,6 +118,14 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="823" y="383" key="#Notifications" timestamp="1604110120342">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="823" y="383" key="#Notifications/0.0.1920.1040@0.0.1920.1040" timestamp="1604110120342" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1604110169142">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1604110169142" />
     <state width="1394" height="373" key="GridCell.Tab.0.bottom" timestamp="1601812698802">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
