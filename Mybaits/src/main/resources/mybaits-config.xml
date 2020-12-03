@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- 导入外部的参数 -->
+    <properties resource="jdbc.properties"></properties>
+
+    <!-- 实体类别名 -->
+    <typeAliases>
+    <!--    <typeAlias type="com.qf.entity.hello" alias="hello"></typeAlias>    -->
+    <!-- 定义实体类所在的 package ，每个实体类都会自动注册一个 别名 = 类名 -->
+        <package name="com.qf.entity"/>
+    </typeAliases>
+
+    <!--  核心配置信息  -->
+    <!--  default="development" 表示让下面的配置信息生效  -->
+    <environments default="development">
+        <!--  数据库相关配置  -->
+        <environment id="development">
+            <!--  数据库控制类型  -->
+            <transactionManager type="JDBC"/>
+            <!--  数据库连接参数  -->
+            <dataSource type="org.apache.ibatis.datasource.pooled.PooledDataSourceFactory">
+                <property name="driver" value="${jdbc.driver}"/>
+                <!--  & 转义 &amp;  -->
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+
+        </environment>
+    </environments>
+
+    <!--  注册mapper文件  -->
+    <mappers>
+        <!--  <mapper resource="UserDAOMapper.xml"/>  -->
+        <mapper resource="com/qf/DAO/UserDAOMapper.xml"></mapper>
+        <mapper resource="com/qf/DAO/PassengerDAOMapper.xml"></mapper>
+        <mapper resource="com/qf/DAO/PassportDAOMapper.xml"></mapper>
+        <mapper resource="com/qf/DAO/DepartmentDAOMapper.xml"></mapper>
+        <mapper resource="com/qf/DAO/EmployeeDAOMapper.xml"></mapper>
+        <mapper resource="com/qf/DAO/SubjectDAOMapper.xml"></mapper>
+    </mappers>
+
+</configuration>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.Dynamic_SQL.EmployeeDAO">
+
+    <!-- 动态sql -->
+    <!-- 1.抽取重复的sql -->
+    <sql id="Just_HaveTry">
+        SELECT t_employees.id, t_employees.`name`, t_employees.salary,
+        t_departments.id deptId, t_departments.location, t_departments.`name` deptName
+        FROM t_employees join t_departments
+        ON t_departments.id = t_employees.dept_id
+    </sql>
+
+    <resultMap id="emp_dept" type="Employee">
+        <!-- 员工本身的属性 -->
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="salary" property="salary"></result>
+
+        <!-- 员工从属部门的信息 -->
+        <association property="department" javaType="Department">
+            <id column="deptId" property="id"></id>
+            <result column="deptName" property="name"></result>
+            <result column="location" property="location"></result>
+        </association>
+    </resultMap>
+    
+    <select id="queryEmployeeById" resultMap="emp_dept">
+
+        <!-- 引用sql片段 -->
+        <include refid="Just_HaveTry">
+
+            <!-- 动态判断，如果id不为空 -->
+            where
+            <if test="id!=null">
+                id=#{id}
+            </if>
+
+            <!-- 动态判断，如果name不为空 -->
+            <if test="name!=null">
+                name=#{name}
+            </if>
+
+            <!-- 动态判断，如果salaty不为空 -->
+            <if test="salary!=null">
+                salary=#{salary}
+            </if>
+
+        </include>
+
+        WHERE t_employees.id = #{id}
+        
+    </select>
+
+
+    <!-- 2.将多个查询语句归为一个，传入一个对象即可 -->
+    <select id="queryEmployee" resultType="Employee" resultMap="emp_dept">
+        <include refid="Just_HaveTry">
+
+        </include>
+    </select>
+
+</mapper>

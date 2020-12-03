@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.DAO.HelloDAO">
+    
+    <resultMap id="hello" type="Hello">
+        <!-- 定义更复杂的映射规则 -->
+
+        <!-- id 标签为主键列 column 是数据库字段名 property 为实体类对应的名字 -->
+        <id column="id" property="id"></id>
+
+        <!-- 其他的列名 -->
+        <result column="name" property="name"></result>
+    </resultMap>
+
+    <!--  描述方法  -->
+    <select id="selectNum" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM hello;
+    </select>
+
+    <!-- 定义resultMap 之后，将 resultType 改为 id -->
+    <select id="selectByName" resultMap="hello">
+        select * from hello
+        where name = #{name}
+    </select>
+
+    <insert id="insert">
+        <!-- 主键回填 -->
+        <selectKey order="AFTER" resultType="int" keyProperty="id">
+            select last_insert_id()
+        </selectKey>
+        insert into hello values (#{name},#{id})
+    </insert>
+
+    <!-- 非整数自增类型主键回填 也就是说 先生成一个 32 的字符串 然后将字符串赋值给 id -->
+    <!--
+    <insert id="insert">
+        <selectKey order="BEFORE" keyProperty="id" resultType="string">
+            select UUID()
+            select replace(UUID(),'_','')
+        </selectKey>
+        insert into hello values (#{name},#{id})
+    </insert>
+     -->
+</mapper>

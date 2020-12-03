@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.DAO.EmployeeDAO">
+
+    <resultMap id="emp_dept" type="Employee">
+        <!-- 员工本身的属性 -->
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="salary" property="salary"></result>
+
+        <!-- 员工从属部门的信息 -->
+        <association property="department" javaType="Department">
+            <id column="deptId" property="id"></id>
+            <result column="deptName" property="name"></result>
+            <result column="location" property="location"></result>
+        </association>
+    </resultMap>
+    
+    <select id="queryEmployeeById" resultMap="emp_dept">
+        SELECT t_employees.id, t_employees.`name`, t_employees.salary,
+        t_departments.id deptId, t_departments.location, t_departments.`name` deptName
+        FROM t_employees join t_departments
+        ON t_departments.id = t_employees.dept_id
+        WHERE t_employees.id = #{id}
+    </select>
+
+</mapper>
