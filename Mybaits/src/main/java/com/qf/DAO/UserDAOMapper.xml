@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.qf.DAO.HelloDAO">
+<mapper namespace="com.qf.DAO.UserDAO">
     
     <resultMap id="hello" type="Hello">
         <!-- 定义更复杂的映射规则 -->
@@ -42,4 +42,9 @@
         insert into hello values (#{name},#{id})
     </insert>
      -->
+
+    <select id="selectAll" resultMap="hello">
+        select * from hello
+    </select>
+
 </mapper>

@@ -4,8 +4,23 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
+    <!--
+        标签的出现顺序 顺序必须按照这个来
+        (properties?, settings?,
+        typeAliases?, typeHandlers?,
+        objectFactory?, objectWrapperFactory?,
+        reflectorFactory?, plugins?,
+        environments?, databaseIdProvider?,
+        mappers?)
+    -->
+
     <!-- 导入外部的参数 -->
     <properties resource="jdbc.properties"></properties>
+
+    <!-- 二级缓存(默认开启) -->
+    <settings>
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
 
     <!-- 实体类别名 -->
     <typeAliases>
@@ -13,6 +28,14 @@
     <!-- 定义实体类所在的 package ，每个实体类都会自动注册一个 别名 = 类名 -->
         <package name="com.qf.entity"/>
     </typeAliases>
+
+
+    <!-- 在 mybaits 安装分页插件 -->
+    <plugins>
+        <!-- "com.github.pagehelper.PageInterceptor" 是 PageHelper 类所在的包名 -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"></plugin>
+    </plugins>
+
 
     <!--  核心配置信息  -->
     <!--  default="development" 表示让下面的配置信息生效  -->
@@ -22,10 +45,15 @@
             <!--  数据库控制类型  -->
             <transactionManager type="JDBC"/>
             <!--  数据库连接参数  -->
-            <dataSource type="org.apache.ibatis.datasource.pooled.PooledDataSourceFactory">
-                <property name="driver" value="${jdbc.driver}"/>
+            <dataSource type="com.qf.util.MyDruidDataSourceFactory">
+
+                <!-- 改变连接池工厂之后，以下 property name 也得随之改变 -->
+
+                <!-- <property name="driver" value="${jdbc.driver}"/> -->
+                <property name="driverClass" value="${jdbc.driver}"/>
+                <!-- <property name="url" value="${jdbc.url}"/> -->
                 <!--  & 转义 &amp;  -->
-                <property name="url" value="${jdbc.url}"/>
+                <property name="jdbcUrl" value="${jdbc.url}"/>
                 <property name="username" value="${jdbc.username}"/>
                 <property name="password" value="${jdbc.password}"/>
             </dataSource>
@@ -42,6 +70,7 @@
         <mapper resource="com/qf/DAO/DepartmentDAOMapper.xml"></mapper>
         <mapper resource="com/qf/DAO/EmployeeDAOMapper.xml"></mapper>
         <mapper resource="com/qf/DAO/SubjectDAOMapper.xml"></mapper>
+        <mapper resource="com/qf/Dynamic_SQL/EmployeeDAOMapper.xml"></mapper>
     </mappers>
 
 </configuration>

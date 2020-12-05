@@ -1,6 +1,6 @@
 package com.qf;
 
-import com.qf.DAO.HelloDAO;
+import com.qf.DAO.UserDAO;
 import com.qf.entity.Hello;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -28,7 +28,7 @@ public class TestMybaits {
         SqlSession sqlSession = sqlSessionFactory.openSession();
 
         // 4.通过SqlSession 获得 DAO 实现类的对象
-        HelloDAO mapper = sqlSession.getMapper(HelloDAO.class);  //获取 UserDAO 对应实现类的对象
+        UserDAO mapper = sqlSession.getMapper(UserDAO.class);  //获取 UserDAO 对应实现类的对象
 
         Hello hello = new Hello("你好", null);
         mapper.insert(hello);

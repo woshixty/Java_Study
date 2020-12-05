@@ -13,7 +13,7 @@ class HelloDAOTest {
 
     @org.junit.jupiter.api.Test
     void selectNum() {
-        HelloDAO helloDAO = MybaitsUtil.getMapper(HelloDAO.class);
+        UserDAO helloDAO = MybaitsUtil.getMapper(UserDAO.class);
         System.out.println(helloDAO.selectNum());
     }
 }
