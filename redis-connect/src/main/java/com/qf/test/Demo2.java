@@ -19,8 +19,8 @@ public class Demo2 {
     @Test
     public void setByteArray() {
         // 1.连接 redis 服务
-        Jedis jedis = new Jedis("192.168.1.103", 6379, 3000);
-        jedis.auth("xxxx");
+        Jedis jedis = new Jedis("8.131.57.6", 6379, 3000);
+        jedis.auth("Flzx3qcYsyhl9t");
 
         // 2.1 准备key (String) - value (User)
         String key = "user";
