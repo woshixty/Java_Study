@@ -7,11 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.mail.internet.MimeMessage;
 import java.util.*;
 
 /**
@@ -36,14 +32,13 @@ public class SendJunkMailServiceImpl implements SendJunkMailService {
             List<String> list = new ArrayList<>();
             list.add("hello");
             list.add("world");
-            list.add("im xty");
+            list.add("jyc");
 
             for (String s:list) {
-
                 SimpleMailMessage message=new SimpleMailMessage();
                 message.setFrom(form);
                 message.setSubject("Just Have A Test");
-                message.setTo("qyyzxty@icloud.com");
+                message.setTo("296246779@qq.com");
                 message.setText("Hello this is a test mail");
                 javaMailSender.send(message);
                 LOGGER.info("YES");
