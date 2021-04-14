@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class HelloWorld {
     public static void main(String[] args) throws IOException {
         //设置驱动
-        System.setProperty("webdriver.chrome.driver", "/Users/mr.stark/Downloads/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\qyyzx\\Desktop\\chromedriver_win32\\chromedriver.exe");
         //创建ChromeDriver对象
         ChromeDriver driver = new ChromeDriver();
         //创建窗口最大化
@@ -30,7 +30,7 @@ public class HelloWorld {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         //使用Xpath解析数据
         int i;
-        for (i = 2; i < 10; i++) {
+        for (i = 2; i < 100; i++) {
             System.out.println(i);
 //            WebElement element = webElement.findElement(By.id(String.valueOf(i)));
             WebElement webElement = driver.findElementById(String.valueOf(i));
