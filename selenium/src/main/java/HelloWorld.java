@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class HelloWorld {
     public static void main(String[] args) throws IOException {
         //设置驱动
-        System.setProperty("webdriver.chrome.driver", "/Users/mr.stark/Downloads/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "/Users/mr.stark/Downloads/driver/chromedriver");
         //创建ChromeDriver对象
         ChromeDriver driver = new ChromeDriver();
         //创建窗口最大化
@@ -29,18 +29,31 @@ public class HelloWorld {
         //给出一定的响应时间
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         //使用Xpath解析数据
-        int i;
-        for (i = 2; i < 10; i++) {
-            System.out.println(i);
+//        int i;
+//        for (i = 2; i < 10; i++) {
+//            System.out.println(i);
 //            WebElement element = webElement.findElement(By.id(String.valueOf(i)));
-            WebElement webElement = driver.findElementById(String.valueOf(i));
-
-            System.out.println(webElement.getText());
-
+//            WebElement webElement = driver.findElementById(String.valueOf(i));
+//
+//            System.out.println(webElement.getText());
+//
+//            WebElement a = webElement.findElement(By.tagName("a"));
+//            System.out.println("标题：" + a.getText());
+//            System.out.println("链接：" + a.getAttribute("href"));
+//            System.out.println("+++++++++++++++++++++++++++++++");
+//        }
+        WebElement webElement = null;
+        try {
+            webElement = driver.findElementById("100");
+        } catch (Exception e) {
+            System.out.println("Hello null");
+        }
+        if ( webElement == null ) {
+            System.out.println("null");
+        } else {
             WebElement a = webElement.findElement(By.tagName("a"));
             System.out.println("标题：" + a.getText());
             System.out.println("链接：" + a.getAttribute("href"));
-            System.out.println("+++++++++++++++++++++++++++++++");
         }
         driver.quit();
     }
