@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 配置User对象创建 -->
+    <!--
+    id属性：给对象取别名(唯一标识)
+    class属性：类全路径
+    name属性：与id类似
+    -->
+    <!--
+    创建对象时默认使用无参构造
+    -->
+    <bean id="user" class="com.ayguigu.spring5.User"></bean>
+
+    <!-- 2、基于xml注入属性-set方法注入属性 -->
+    <bean id="book" class="com.ayguigu.spring5.Book">
+        <!-- 使用property完成属性注入 -->
+        <property name="name" value="Java"></property>
+        <property name="bauthor" value="谢庭宇"></property>
+    </bean>
+
+    <!-- 3、有参数构造注入属性 -->
+    <bean id="orders" class="com.ayguigu.spring5.Orders">
+        <constructor-arg index="0" value="name"/>
+        <constructor-arg index="1" value="address"/>
+    </bean>
+</beans>
