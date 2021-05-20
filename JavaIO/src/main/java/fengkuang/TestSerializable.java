@@ -1,6 +1,5 @@
 package fengkuang;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -12,7 +11,7 @@ import java.io.ObjectOutputStream;
 public class TestSerializable {
     public static void main(String[] args) throws IOException {
         //创建一个ObjectOutputStream输出流
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("object.txt"));
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("object2.txt"));
         //将一个Person对象输出到输出流中
         Person per = new Person("xty", 18);
         oos.writeObject(per);
