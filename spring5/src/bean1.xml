@@ -18,7 +18,19 @@
     <bean id="book" class="com.ayguigu.spring5.Book">
         <!-- 使用property完成属性注入 -->
         <property name="name" value="Java"></property>
-        <property name="bauthor" value="谢庭宇"></property>
+        <!-- <property name="bauthor" value="谢庭宇"></property> -->
+
+        <!-- 设置null值 -->
+        <!-- <property name="bauthor">-->
+        <!-- <null></null>-->
+        <!-- </property>-->
+
+        <!-- 属性值包含特殊字符 -->
+        <property name="bauthor">
+            <value>
+                <![CDATA[<<南京>>]]>
+            </value>
+        </property>
     </bean>
 
     <!-- 3、有参数构造注入属性 -->

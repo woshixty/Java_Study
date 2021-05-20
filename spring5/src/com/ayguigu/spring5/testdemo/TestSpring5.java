@@ -1,17 +1,16 @@
 package com.ayguigu.spring5.testdemo;
 
+
 import com.ayguigu.spring5.Book;
 import com.ayguigu.spring5.Orders;
 import com.ayguigu.spring5.User;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 /**
  * @author qyyzxty@icloud.com
  * @data 2021/4/22
  **/
-
 public class TestSpring5 {
 
     @Test
