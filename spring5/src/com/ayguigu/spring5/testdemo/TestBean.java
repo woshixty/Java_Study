@@ -1,6 +1,7 @@
 package com.ayguigu.spring5.testdemo;
 
 
+import com.ayguigu.spring5.bean.Emp;
 import com.ayguigu.spring5.service.UserService;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -20,5 +21,15 @@ public class TestBean {
         //2、获取配置创建的对象
         UserService userService = context.getBean("userService", UserService.class);
         userService.add();
+    }
+
+    @Test
+    public void testBean2() {
+        //1、加载配置文件
+        ApplicationContext context = new
+                ClassPathXmlApplicationContext("bean3.xml");
+        //2、获取配置创建的对象
+        Emp emp = context.getBean("emp", Emp.class);
+        System.out.println(emp);
     }
 }
