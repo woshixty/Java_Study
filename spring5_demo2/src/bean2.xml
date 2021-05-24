@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
-    <!-- 1 service和dao对象的创建 -->
-    <bean id="userService" class="com.ayguigu.spring5.service.UserService">
-        <!--
-        注入UserDao:
-        name属性：类里面属性名称
-        ref属性：创建userDao对象bean标签id值
-        -->
-        <property name="userDao" ref="userDaoImpl"></property>
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-beans.xsd">
+    <!-- 1、集合类型属性注入 -->
+    <util:list id="bookList">
+        <value>疯狂Java讲义</value>
+        <value>SpringBoot实战</value>
+        <value>Git高手之路</value>
+    </util:list>
+    <!-- 2、提取list集合类型属性注入使用 -->
+    <bean id="book" class="com.ayguigu.spring5.collectiontype.Book">
+        <property name="list" ref="bookList"></property>
     </bean>
-    <bean id="userDaoImpl" class="com.ayguigu.spring5.dao.UserDaoImpl"></bean>
 </beans>

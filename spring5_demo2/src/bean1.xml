@@ -3,39 +3,49 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!-- 配置User对象创建 -->
-    <!--
-    id属性：给对象取别名(唯一标识)
-    class属性：类全路径
-    name属性：与id类似
-    -->
-    <!--
-    创建对象时默认使用无参构造
-    -->
-    <bean id="user" class="com.ayguigu.spring5.User"></bean>
-
-    <!-- 2、基于xml注入属性-set方法注入属性 -->
-    <bean id="book" class="com.ayguigu.spring5.Book">
-        <!-- 使用property完成属性注入 -->
-        <property name="name" value="Java"></property>
-        <!-- <property name="bauthor" value="谢庭宇"></property> -->
-
-        <!-- 设置null值 -->
-        <!-- <property name="bauthor">-->
-        <!-- <null></null>-->
-        <!-- </property>-->
-
-        <!-- 属性值包含特殊字符 -->
-        <property name="bauthor">
-            <value>
-                <![CDATA[<<南京>>]]>
-            </value>
+    <!-- 1、集合类型属性注入 -->
+    <bean id="stu" class="com.ayguigu.spring5.collectiontype.Stu">
+        <!-- 数组类型属性注入 -->
+        <property name="courses">
+            <array>
+                <value>Java</value>
+                <value>MySQL</value>
+                <value>Spring</value>
+            </array>
+        </property>
+        <!-- list类型属性注入 -->
+        <property name="list">
+            <list>
+                <value>张三</value>
+                <value>李四</value>
+            </list>
+        </property>
+        <!-- map类型属性注入 -->
+        <property name="map">
+            <map>
+                <entry key="JAVA" value="java"></entry>
+                <entry key="PHP" value="php"></entry>
+            </map>
+        </property>
+        <!-- set类型属性注入 -->
+        <property name="set">
+            <set>
+                <value>xty</value>
+                <value>jhl</value>
+            </set>
+        </property>
+        <!-- 注入list集合类型，值是对象 -->
+        <property name="courseList">
+            <list>
+                <ref bean="course1"></ref>
+                <ref bean="course2"></ref>
+            </list>
         </property>
     </bean>
-
-    <!-- 3、有参数构造注入属性 -->
-    <bean id="orders" class="com.ayguigu.spring5.Orders">
-        <constructor-arg index="0" value="name"/>
-        <constructor-arg index="1" value="address"/>
+    <bean id="course1" class="com.ayguigu.spring5.collectiontype.Course">
+        <property name="cname" value="Spring5框架"></property>
+    </bean>
+    <bean id="course2" class="com.ayguigu.spring5.collectiontype.Course">
+        <property name="cname" value="Java Web"></property>
     </bean>
 </beans>
