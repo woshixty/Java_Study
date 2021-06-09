@@ -12,9 +12,13 @@ import org.springframework.stereotype.Component;
 @Component
 @Aspect
 public class UserProxy {
+    //相同切入点抽取
+    @Pointcut(value = "execution(* com.atguigu.spring5.aopanno.User.add())")
+    public void pointdemo() { }
+
     //前置通知
     //@Before表示作为前置通知（切入点表达式指明哪个类中的哪个方法）
-    @Before(value = "execution(* com.atguigu.spring5.aopanno.User.add())")
+    @Before(value = "pointdemo()")
     public void before() {
         System.out.println("before()......");
     }
