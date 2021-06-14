@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="59c30382-8791-46ba-a641-1c29245c3699" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../selenium/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../selenium/src/main/java/Bilibili.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../爬虫/src/main/java/cn/itcast/crawler/test/GetPic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../selenium/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../selenium/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/src/main/java/HelloWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../selenium/src/main/java/HelloWorld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/target/classes/HelloWorld.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../selenium/target/classes/HelloWorld.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../爬虫/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../爬虫/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../爬虫/target/classes/document.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../爬虫/target/classes/document.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../爬虫/target/classes/string.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../爬虫/target/classes/string.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="C:/maven/apache-maven-3.6.3" />
+        <option name="userSettingsFile" value="C:\apache-maven-3.6.3\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1r8qezzyD8PuqyUmlK7XHtVa1GG" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="59c30382-8791-46ba-a641-1c29245c3699" name="Default Changelist" comment="" />
+      <created>1618368163199</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1618368163199</updated>
+      <workItem from="1618368167670" duration="7000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+</project>
