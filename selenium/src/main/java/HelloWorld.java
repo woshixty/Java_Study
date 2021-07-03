@@ -1,7 +1,6 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import java.io.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -9,9 +8,13 @@ import java.util.concurrent.TimeUnit;
  * 2021/4/7
  **/
 public class HelloWorld {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         //设置驱动
+<<<<<<< HEAD
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\qyyzx\\Desktop\\chromedriver\\chromedriver.exe");
+=======
         System.setProperty("webdriver.chrome.driver", "/Users/mr.stark/Downloads/driver/chromedriver");
+>>>>>>> 355951209105be30043a5638899814afdb2a5086
         //创建ChromeDriver对象
         ChromeDriver driver = new ChromeDriver();
         //创建窗口最大化
@@ -29,6 +32,12 @@ public class HelloWorld {
         //给出一定的响应时间
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         //使用Xpath解析数据
+<<<<<<< HEAD
+        int i;
+        for (i = 2; i < 100; i++) {
+            System.out.println(i);
+            WebElement webElement = driver.findElementById(String.valueOf(i));
+=======
 //        int i;
 //        for (i = 2; i < 10; i++) {
 //            System.out.println(i);
@@ -51,6 +60,7 @@ public class HelloWorld {
         if ( webElement == null ) {
             System.out.println("null");
         } else {
+>>>>>>> 355951209105be30043a5638899814afdb2a5086
             WebElement a = webElement.findElement(By.tagName("a"));
             System.out.println("标题：" + a.getText());
             System.out.println("链接：" + a.getAttribute("href"));

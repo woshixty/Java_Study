@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-beans.xsd">
+    <!--
+     1、Spring有两种类型的bean：一种是普通bean；一种是工厂bean（FactoryBean）
+     2、普通bean：在配置文件中定义bean类型就是返回类型
+     3、工厂bean：在配置文件定义bean类型可以和返回类型不一样
+     -->
+
+    <bean id="myBean" class="com.ayguigu.spring5.factorybean.MyBean">
+    </bean>
+</beans>
