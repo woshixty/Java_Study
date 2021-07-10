@@ -1,7 +1,5 @@
 package com.example.webfluxdemo1.entity;
 
-
-
 /**
  * @author qyyzxty@icloud.com
  * 2021/7/7
@@ -39,5 +37,8 @@ public class User {
         this.name = name;
         this.gender = gender;
         this.age = age;
+    }
+
+    public User() {
     }
 }
