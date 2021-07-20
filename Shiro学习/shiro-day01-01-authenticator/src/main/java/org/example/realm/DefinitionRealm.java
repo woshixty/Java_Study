@@ -1,11 +1,16 @@
 package org.example.realm;
 
 import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.example.service.SecurityService;
 import org.example.service.impl.SecurityServiceImpl;
+import org.example.tools.DigestsUtil;
+
+import java.util.Map;
 
 /**
  * @author qyyzxty@icloud.com
@@ -22,6 +27,15 @@ public class DefinitionRealm extends AuthorizingRealm {
         return null;
     }
 
+    public DefinitionRealm() {
+        //指定密码匹配方式sha-1
+        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher(DigestsUtil.SHA1);
+        //指定密码迭代次数
+        hashedCredentialsMatcher.setHashIterations(DigestsUtil.ITERATION);
+        //使用父层方式使匹配方式生效
+        setCredentialsMatcher(hashedCredentialsMatcher);
+    }
+
     /**
      * 认证方法
      * @param token
@@ -33,10 +47,13 @@ public class DefinitionRealm extends AuthorizingRealm {
         //获取登录名
         String loginName = (String) token.getPrincipal();
         SecurityService securityService = new SecurityServiceImpl();
-        String password = securityService.findPasswordByLogin(loginName);
-        if ("".equals(password)) {
+//        String password = securityService.findPasswordByLoginName(loginName);
+        Map<String, String> map = securityService.findPasswordByLoginName2(loginName);
+        if ("".equals(map.isEmpty())) {
             throw new UnknownAccountException("账户不存在");
         }
-        return new SimpleAuthenticationInfo(loginName, password, getName());
+        String salt = map.get("salt");
+        String password = map.get("password");
+        return new SimpleAuthenticationInfo(loginName, password, ByteSource.Util.bytes(salt), getName());
     }
 }

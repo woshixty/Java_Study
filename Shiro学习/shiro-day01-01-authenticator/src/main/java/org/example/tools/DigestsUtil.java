@@ -12,9 +12,9 @@ import java.util.Map;
  **/
 public class DigestsUtil {
     //加密方式
-    private static final String SHA1="SHA-1";
+    public static final String SHA1="SHA-1";
     //加密次数
-    private static final Integer ITERATION=512;
+    public static final Integer ITERATION=512;
     /**
      * SHA-1摘要算法
      * @param input
