@@ -1,7 +1,9 @@
 package org.example.client;
 
+import org.example.tools.DigestsUtil;
 import org.example.tools.EncodesUtil;
 import org.junit.Test;
+import java.util.Map;
 
 /**
  * @author qyyzxty@icloud.com
@@ -24,5 +26,10 @@ public class ClientTest {
         String valHandler = new String(EncodesUtil.decodeBase64(flag));
         System.out.println("比较结果" + val.equals(valHandler));
         System.out.println("flag：" + flag);
+    }
+    @Test
+    public void testDigestsUtil() {
+        Map<String, String> map = DigestsUtil.entryptPassword("123");
+        System.out.println(map.toString());
     }
 }
