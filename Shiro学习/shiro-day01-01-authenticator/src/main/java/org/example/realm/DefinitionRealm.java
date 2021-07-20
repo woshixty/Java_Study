@@ -3,6 +3,7 @@ package org.example.realm;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
@@ -10,6 +11,7 @@ import org.example.service.SecurityService;
 import org.example.service.impl.SecurityServiceImpl;
 import org.example.tools.DigestsUtil;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +26,17 @@ public class DefinitionRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        return null;
+        //拿到用户的凭证信息
+        String loginName = (String) principalCollection.getPrimaryPrincipal();
+        //从数据库中查询对应的角色权限
+        SecurityService securityService = new SecurityServiceImpl();
+        List<String> roles = securityService.findRoleByLoginName(loginName);
+        List<String> permissions = securityService.findPermissionByLoginName(loginName);
+        //构建资源校验对象
+        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+        simpleAuthorizationInfo.addRoles(roles);
+        simpleAuthorizationInfo.addStringPermissions(permissions);
+        return simpleAuthorizationInfo;
     }
 
     public DefinitionRealm() {
