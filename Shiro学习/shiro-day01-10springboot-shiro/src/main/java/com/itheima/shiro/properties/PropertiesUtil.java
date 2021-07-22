@@ -8,7 +8,6 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class PropertiesUtil {
-
     public static LinkProperties propertiesShiro = new LinkProperties();
 
     /**
@@ -25,7 +24,8 @@ public class PropertiesUtil {
             propertiesShiro.load(PropertiesUtil.class.getClassLoader()
                     .getResourceAsStream("authentication.properties"));
         } catch (Exception e) {
-            log.warn("资源路径中不存在authentication.properties权限文件，忽略读取！");
+            e.printStackTrace();
+//            log.warn("资源路径中不存在authentication.properties权限文件，忽略读取！");
         }
     }
 

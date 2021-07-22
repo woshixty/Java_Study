@@ -75,6 +75,9 @@ public class UDPProvider2 {
             System.out.println("UDPProvider Finished.");
         }
 
+        /**
+         * 关闭资源
+         */
         private void close() {
             if (ds != null) {
                 ds.close();

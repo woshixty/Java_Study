@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-
 import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -77,10 +76,10 @@ public class ShiroConfig {
         return  new LifecycleBeanPostProcessor();
     }
 
-    //aop增强（使用注解鉴权方式）
     /**
      * @Description AOP式方法级权限检查
      */
+    //aop增强（使用注解鉴权方式）
     @Bean
     @DependsOn("lifecycleBeanPostProcessor")
     public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {

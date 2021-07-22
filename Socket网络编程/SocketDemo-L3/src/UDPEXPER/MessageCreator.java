@@ -5,8 +5,8 @@ package UDPEXPER;
  * 2021/7/20
  **/
 public class MessageCreator {
-    public static final String SN_HEADER = "收到暗号，我是（SN）：";
-    public static final String PORT_HEADER = "这是暗号，请回电端口（Port）：";
+    private static final String SN_HEADER = "收到暗号，我是（SN）：";
+    private static final String PORT_HEADER = "这是暗号，请回电端口（Port）：";
 
     /**
      * 基于端口号的创建
