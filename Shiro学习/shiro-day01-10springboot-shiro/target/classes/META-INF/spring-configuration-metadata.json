@@ -1,0 +1,127 @@
+{
+  "groups": [
+    {
+      "name": "itheima.datasource.shiro",
+      "type": "com.itheima.shiro.config.ShiroDataSourceProperties",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "itheima.datasource.shiro.data-source-name",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.driver-class-name",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.filters",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.initial-size",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.log-abandoned",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.mapper-locations",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.max-active",
+      "type": "java.lang.Integer",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.max-life-time",
+      "type": "java.lang.Integer",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.max-wait",
+      "type": "java.lang.Integer",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.min-idle",
+      "type": "java.lang.Integer",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.password",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.primary-key",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.remove-abandoned",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.remove-abandoned-timeout",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.test-on-borrow",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.test-on-return",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.test-while-idle",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.type-aliases-package",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.url",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.username",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.validation-query",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.work-id",
+      "type": "java.lang.Integer",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    },
+    {
+      "name": "itheima.datasource.shiro.xa-data-source-class-name",
+      "type": "java.lang.String",
+      "sourceType": "com.itheima.shiro.config.ShiroDataSourceProperties"
+    }
+  ],
+  "hints": []
+}
