@@ -102,7 +102,7 @@ public class ShiroConfig {
      * @Description 过滤器链定义
      */
     private Map<String,String> filterChainDefinitionMap(){
-       List<Object> list =  PropertiesUtil.propertiesShiro.getKeyList();
+        List<Object> list =  PropertiesUtil.propertiesShiro.getKeyList();
         Map<String,String> map = new LinkedHashMap<>();
         for (Object o : list) {
             String key = o.toString();

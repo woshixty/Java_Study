@@ -4,9 +4,11 @@ import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.itheima.shiro.interceptor.ModifyArgsValueInterceptor;
 import com.itheima.shiro.utils.IpAddrUtil;
 import com.itheima.shiro.utils.SeqGenerator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.ibatis.logging.log4j2.Log4j2Impl;
 import org.apache.ibatis.plugin.Interceptor;
+import org.apache.shiro.authz.annotation.*;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import java.util.Properties;
 /**
  * @Description 数据库配置
  */
+@RequiresRoles(value = {"SuperAdmin", "dev"}, logical = Logical.OR)
 @Log4j2
 @Configuration
 @MapperScan(basePackages = {"com.itheima.shiro.mapper", "com.itheima.shiro.mappercustom"},
