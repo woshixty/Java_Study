@@ -3,7 +3,6 @@ package com.itheima.shiro.core.base;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 import org.apache.shiro.util.CollectionUtils;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;

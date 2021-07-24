@@ -6,7 +6,6 @@ import com.itheima.shiro.core.base.BaseResponse;
 import com.itheima.shiro.utils.EmptyUtil;
 import org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter;
 import org.apache.shiro.web.util.WebUtils;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.IOException;

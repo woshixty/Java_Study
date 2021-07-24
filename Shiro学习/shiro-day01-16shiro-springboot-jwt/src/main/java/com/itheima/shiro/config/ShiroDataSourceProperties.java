@@ -1,12 +1,10 @@
 package com.itheima.shiro.config;
 
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- *
  * @Description  Xa数据源配置
  */
 @Data
@@ -62,6 +60,7 @@ public class ShiroDataSourceProperties {
 
 	// 是否启用租期
 	public String removeAbandoned;
+
 	// 租期最大超时时间(规定时间内connection为close则自动收回)
 	public String removeAbandonedTimeout;
 

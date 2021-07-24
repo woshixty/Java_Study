@@ -1,9 +1,4 @@
-
 package com.itheima.shiro.constant;
-
-
-
-
 
 /**
  * @Description 缓存键值常量类
@@ -19,6 +14,5 @@ public class CacheConstant extends SuperConstant{
 	public static final String RESOURCES_KEY_IDS =GROUP_CAS+"resources_key_ids:";
 
 	public final static String FIND_USER_BY_LOGINNAME =GROUP_CAS+"findUserByLoginName";
-	
 
 }

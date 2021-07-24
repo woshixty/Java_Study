@@ -12,7 +12,6 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
  * @Description：springMVC配置,spring5之后不建议使用WebMvcConfigurerAdapter
  * @EnableWebMvc 自动开启springMVC
  * @ComponentScan 自动扫描web层装配bean
- *
  */
 @Configuration
 @EnableWebMvc
@@ -29,13 +28,6 @@ public class SpringMvcConfig implements WebMvcConfigurer  {
         viewResolver.setSuffix(".jsp");
         return  viewResolver;
     }
-
-//    @Override
-//    public void configureDefaultServletHandling(
-//            DefaultServletHandlerConfigurer configurer) {
-//        // 开启默认转发
-//        configurer.enable();
-//    }
 
     // 如果不加，则静态资源会被拦截，导致访问不到静态资源
     @Override

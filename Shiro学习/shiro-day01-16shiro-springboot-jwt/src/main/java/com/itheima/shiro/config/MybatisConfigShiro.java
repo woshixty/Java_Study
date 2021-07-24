@@ -14,7 +14,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -29,14 +28,10 @@ import java.util.Properties;
         sqlSessionFactoryRef = "sqlSessionFactoryBeanShiro")
 @EnableConfigurationProperties({ShiroDataSourceProperties.class})
 public class MybatisConfigShiro {
-
-
     @Autowired
     ShiroDataSourceProperties dataSourceProperties;
 
-
     private AtomikosDataSourceBean handleXaProperties(AtomikosDataSourceBean atomikosDataSourceBean) {
-
         Properties dataSourceHashMap = new Properties();
         dataSourceHashMap.put("driverClassName", dataSourceProperties.getDriverClassName());
         dataSourceHashMap.put("url", dataSourceProperties.getUrl());
@@ -63,7 +58,6 @@ public class MybatisConfigShiro {
         AtomikosDataSourceBean atomikosDataSourceBean = new AtomikosDataSourceBean();
         atomikosDataSourceBean.setUniqueResourceName(dataSourceProperties.getDataSourceName());
         atomikosDataSourceBean.setXaDataSourceClassName(dataSourceProperties.getXaDataSourceClassName());
-
         // 连接池最小连接数量
         atomikosDataSourceBean.setMinPoolSize(dataSourceProperties.getMinIdle());
         // 连接池最大连接数量
@@ -86,7 +80,6 @@ public class MybatisConfigShiro {
         }
         atomikosDataSourceBean.setTestQuery(dataSourceProperties.getValidationQuery());
         handleXaProperties(atomikosDataSourceBean);
-
         log.info("dataSourceShiro:抽象类创建完成!!IP=" + IpAddrUtil.hostIpAddr());
         return atomikosDataSourceBean;
     }

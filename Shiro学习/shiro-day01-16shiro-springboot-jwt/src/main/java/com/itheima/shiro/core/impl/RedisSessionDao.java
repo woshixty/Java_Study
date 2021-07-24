@@ -7,7 +7,6 @@ import org.apache.shiro.session.UnknownSessionException;
 import org.apache.shiro.session.mgt.eis.AbstractSessionDAO;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
-
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Collection;

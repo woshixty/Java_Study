@@ -23,7 +23,6 @@ import javax.servlet.ServletResponse;
  */
 @Log4j2
 public class KickedOutAuthorizationFilter extends AccessControlFilter {
-
     private RedissonClient redissonClient;
 
     private RedisSessionDao redisSessionDao;
@@ -79,7 +78,6 @@ public class KickedOutAuthorizationFilter extends AccessControlFilter {
                 redisSessionDao.delete(session);
             }
         }
-
         //7、未超过：放过操作
         return true;
     }

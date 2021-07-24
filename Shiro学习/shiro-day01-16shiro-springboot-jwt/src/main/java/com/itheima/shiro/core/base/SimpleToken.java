@@ -1,8 +1,6 @@
-
 package com.itheima.shiro.core.base;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
-
 
 /**
  * @Description 自定义tooken
@@ -46,6 +44,4 @@ public class SimpleToken extends UsernamePasswordToken {
 	public void setQuickPassword(String quickPassword) {
 		this.quickPassword = quickPassword;
 	}
-	
-	
 }

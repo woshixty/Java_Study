@@ -1,18 +1,14 @@
-
 package com.itheima.shiro.core.base;
 
 import com.itheima.shiro.utils.ToString;
 import lombok.Data;
-
 import java.util.List;
-
 
 /**
  * @Description 自定义Authentication对象，使得Subject除了携带用户的登录名外还可以携带更多信息
  */
 @Data
 public class  ShiroUser extends ToString {
-
 	/** serialVersionUID */
 	private static final long serialVersionUID = -5024855628064590607L;
 
@@ -103,7 +99,6 @@ public class  ShiroUser extends ToString {
 		this.loginName = loginName;
 	}
 
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -147,6 +142,4 @@ public class  ShiroUser extends ToString {
 			return false;
 		return true;
 	}
-	
-	
 }

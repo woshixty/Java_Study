@@ -10,19 +10,15 @@ import com.itheima.shiro.pojo.User;
 import com.itheima.shiro.pojo.UserExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 
 /**
  * @Description 后台登陆用户适配器接口实现
  */
 @Component("userAdapter")
 public class UserAdapterImpl implements UserAdapter {
-
 	@Autowired
 	private UserMapper userMapper;
 

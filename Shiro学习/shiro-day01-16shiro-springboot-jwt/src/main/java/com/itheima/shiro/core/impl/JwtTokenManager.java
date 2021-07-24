@@ -96,5 +96,4 @@ public class JwtTokenManager {
         jwtVerifier.verify(jwtToken);
         return true;
     }
-
 }

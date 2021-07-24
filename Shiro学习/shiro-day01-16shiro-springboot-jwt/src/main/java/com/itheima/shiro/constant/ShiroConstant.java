@@ -9,14 +9,10 @@
 
 package com.itheima.shiro.constant;
 
-
-
 /**
  * @Description shiro的常量类
  */
-
 public class ShiroConstant {
-
 	/** 后台系统 **/
 	public static  final String PLATFORM_MGT = "platform_mgt";
 
@@ -31,7 +27,6 @@ public class ShiroConstant {
 	//登录失败
 	public static final Integer LOGIN_FAILURE_CODE = 3;
 	public static final String LOGIN_FAILURE_MESSAGE = "登录失败";
-
 
 	//缺少用户权限
 	public static final Integer NO_AUTH_CODE = 5;

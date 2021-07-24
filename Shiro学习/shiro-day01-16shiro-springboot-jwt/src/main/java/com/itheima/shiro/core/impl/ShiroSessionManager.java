@@ -6,7 +6,6 @@ import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.Serializable;
@@ -31,9 +30,8 @@ public class ShiroSessionManager extends DefaultWebSessionManager {
         //如果没有走默认的cook获得sessionId的方式
         if (EmptyUtil.isNullOrEmpty(jwtToken)){
             return super.getSessionId(request, response);
-            //如果有走jwtToken获得sessionI的的方式
-
-        }else {
+        } else {
+            //如果有走jwtToken获得sessionId的的方式
             Claims claims = jwtTokenManager.decodeToken(jwtToken);
             String id = (String) claims.get("jti");
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE,
@@ -42,6 +40,5 @@ public class ShiroSessionManager extends DefaultWebSessionManager {
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_IS_VALID, Boolean.TRUE);
             return id;
         }
-
     }
 }

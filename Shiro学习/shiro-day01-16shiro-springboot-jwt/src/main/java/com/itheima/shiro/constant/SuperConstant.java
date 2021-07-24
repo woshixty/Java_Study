@@ -1,13 +1,9 @@
-
 package com.itheima.shiro.constant;
 
-
 /**
- *
  * @Description 静态变量
  */
 public class SuperConstant {
-	
 	/**
 	 * 常量是
 	 */
@@ -53,6 +49,4 @@ public class SuperConstant {
 	 * 计算次数
 	 */
 	public static final int HASH_INTERATIONS = 1024;
-
-
 }

@@ -1,6 +1,5 @@
 package com.itheima.shiro.config;
 
-
 import com.itheima.shiro.core.ShiroDbRealm;
 import com.itheima.shiro.core.filter.*;
 import com.itheima.shiro.core.impl.JwtTokenManager;
@@ -25,7 +24,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-
 import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -106,13 +104,17 @@ public class ShiroConfig {
         return new ShiroDbRealmImpl();
     }
 
-
+    /**
+     *
+     * @return
+     */
     @Bean("redisSessionDao")
     public RedisSessionDao redisSessionDao(){
         RedisSessionDao redisSessionDao = new RedisSessionDao();
         redisSessionDao.setGlobalSessionTimeout(shiroRedisProperties.getGlobalSessionTimeout());
         return redisSessionDao;
     }
+
     /**
      * @Description 会话管理器
      */
@@ -198,5 +200,4 @@ public class ShiroConfig {
         shiroFilter.setUnauthorizedUrl("/login");
         return shiroFilter;
     }
-
 }

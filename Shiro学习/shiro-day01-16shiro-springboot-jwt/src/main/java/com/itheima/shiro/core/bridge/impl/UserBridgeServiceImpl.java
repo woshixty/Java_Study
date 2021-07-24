@@ -16,7 +16,6 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.cache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +26,6 @@ import java.util.Map;
  */
 @Component("userBridgeService")
 public class UserBridgeServiceImpl implements UserBridgeService {
-
     @Autowired
     UserAdapter userAdapter;
 
@@ -58,13 +56,13 @@ public class UserBridgeServiceImpl implements UserBridgeService {
     public List<String> findResourcesIds(String userId) {
         String sessionId = ShiroUtil.getShiroSessionId();
         String key = CacheConstant.RESOURCES_KEY_IDS+sessionId;
-        List<Resource> resources = new ArrayList<>();
+        List<Resource> resources;
         //获取缓存
         Cache<Object, Object> cache = simpleCacheService.getCache(key);
         //缓存存在
-        if (!EmptyUtil.isNullOrEmpty(cache)){
+        if (!EmptyUtil.isNullOrEmpty(cache)) {
             resources = (List<Resource>) cache.get(key);
-        }else {
+        } else {
         //缓存不存在
             resources = userAdapter.findResourceByUserId(userId);
             if (!EmptyUtil.isNullOrEmpty(resources)){
@@ -73,9 +71,7 @@ public class UserBridgeServiceImpl implements UserBridgeService {
                 SimpleMapCache simpleMapCache = new SimpleMapCache(key, map);
                 simpleCacheService.creatCache(key,simpleMapCache );
             }
-
         }
-
         List<String> ids = new ArrayList<>();
         for (Resource resource : resources) {
             ids.add(resource.getId());
@@ -101,7 +97,7 @@ public class UserBridgeServiceImpl implements UserBridgeService {
 
     @Override
     public List<String> findRoleList(String key,String userId){
-        List<Role> roles = new ArrayList<>();
+        List<Role> roles;
         //获得缓存
         Cache<Object, Object> cache = simpleCacheService.getCache(key);
         //缓存存在
@@ -117,7 +113,6 @@ public class UserBridgeServiceImpl implements UserBridgeService {
                 simpleCacheService.creatCache(key,simpleMapCache );
             }
         }
-
         List<String> roleLabel = new ArrayList<>();
         for (Role role : roles) {
             roleLabel.add(role.getLabel());
@@ -127,7 +122,7 @@ public class UserBridgeServiceImpl implements UserBridgeService {
 
     @Override
     public List<String> findResourcesList(String key,String userId){
-        List<Resource> resources = new ArrayList<>();
+        List<Resource> resources;
         //获得缓存
         Cache<Object, Object> cache = simpleCacheService.getCache(key);
         //缓存存在
@@ -149,9 +144,6 @@ public class UserBridgeServiceImpl implements UserBridgeService {
         }
         return resourceLabel;
     }
-
-
-
 
     @Override
     public void loadUserAuthorityToCache(ShiroUser shiroUser) {

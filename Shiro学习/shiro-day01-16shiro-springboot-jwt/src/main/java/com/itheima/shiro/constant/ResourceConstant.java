@@ -9,14 +9,10 @@
 
 package com.itheima.shiro.constant;
 
-
-
 /**
  * @Description 资源类型相关常量
  */
-
 public class ResourceConstant {
-	
 	/**
 	 * 常量菜单
 	 */
@@ -36,5 +32,4 @@ public class ResourceConstant {
 	 * 常量dubbo请求
 	 */
 	public static final String DUBBO = "dubbo";
-
 }
