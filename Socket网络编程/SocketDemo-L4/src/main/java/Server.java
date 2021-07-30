@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.Inet4Address;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -11,19 +13,49 @@ import java.net.Socket;
  * 服务器端
  **/
 public class Server {
+    private static final int PORT = 20000;
+
     public static void main(String[] args) throws IOException {
-        ServerSocket server = new ServerSocket(2000);
+        ServerSocket serverSocket = createServerSocket();
+        initServerSocket(serverSocket);
+        //绑定到本地端口
+        serverSocket.bind(new InetSocketAddress(Inet4Address.getLocalHost(), PORT), 50);
         System.out.println("服务器已经准备就绪");
-        System.out.println("服务器信息：" + server.getInetAddress() + "P：" + server.getLocalPort());
+        System.out.println("服务器信息：" + serverSocket.getInetAddress() + "P：" + serverSocket.getLocalPort());
         //等待客户端连接
         while (true) {
             //得到客户端
-            Socket client = server.accept();
+            Socket client = serverSocket.accept();
             //客户端启动异步线程
             ClientHandler clientHandler = new ClientHandler(client);
             //启动线程
             clientHandler.start();
         }
+    }
+
+    private static ServerSocket createServerSocket() throws IOException {
+        //创建基础的ServerSocket
+        ServerSocket serverSocket = new ServerSocket();
+        /*
+        绑定到本地端口20000上，并且设置当前可允许等待链接的队列为50个
+        serverSocket = new ServerSocket(PORT);
+        等效于上面的方案，队列设置为50个
+        serverSocket = new ServerSocket(PORT, 50);
+        与上面等同
+        serverSocket = new ServerSocket(PORT, 50, Inet4Address.getLocalHost());
+         */
+        return serverSocket;
+    }
+
+    private static void initServerSocket(ServerSocket serverSocket) throws IOException {
+        //是否复用未完全关闭的地址端口
+        serverSocket.setReuseAddress(true);
+        //等效Socket#setReceiveBufferSize
+        serverSocket.setReceiveBufferSize(64 * 1024 * 1024);
+        //设置serverSocket#accept超时时间
+        //serverSocket.setSoTimeout(2000);
+        //设置性能参数：短链接，延迟，带宽的相对重要性
+        serverSocket.setPerformancePreferences(1, 1, 1);
     }
 
     /**

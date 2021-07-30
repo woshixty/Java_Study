@@ -32,6 +32,25 @@ public class Client {
     }
     */
 
+    public static void main(String[] args) throws IOException {
+        Socket socket = createSocket();
+        //初始化Socket
+        initSocket(socket);
+        //连接到本地20000端口，超时时间3秒，超过则抛出异常
+        socket.connect(new InetSocketAddress(Inet4Address.getLocalHost(), PORT), 3000);
+        System.out.println("已发起服务器连接");
+        System.out.println("客户端信息：" + socket.getLocalAddress() + "P：" + socket.getLocalPort());
+        System.out.println("服务器信息：" + socket.getInetAddress() + "P：" + socket.getPort());
+        try {
+            todo(socket);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("异常关闭");
+        }
+        socket.close();
+        System.out.println("客户端退出");
+    }
+
     private static void todo(Socket client) throws IOException {
         //构建键盘输入流
         InputStream in = System.in;
@@ -60,10 +79,6 @@ public class Client {
         //资源释放
         socketPrintStream.close();
         socketBufferedReader.close();
-    }
-
-    public static void main(String[] args) {
-
     }
 
     private static Socket createSocket() throws IOException {
@@ -104,6 +119,6 @@ public class Client {
         socket.setReceiveBufferSize(64*1024*1024);
         socket.setSendBufferSize(64*1024*1024);
         //设置性能参数：短链接，延迟，带宽的相对重要性
-        socket.setPerformancePreferences(1, 1, 1);
+        socket.setPerformancePreferences(1, 10, 1);
     }
 }

@@ -1,4 +1,3 @@
-
 package com.itheima.shiro.utils;
 
 import com.itheima.shiro.core.base.ShiroUser;
@@ -7,7 +6,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
-
 
 /**
  * @Description shiroUser工具类
@@ -41,7 +39,6 @@ public class ShiroUserUtil extends ShiroUtil{
 			return shiroUser.getId();
 		}
 	}
-	
 
 	/**
 	 * @Description 更新登录用户信息  用户id 和用户登录名不更新

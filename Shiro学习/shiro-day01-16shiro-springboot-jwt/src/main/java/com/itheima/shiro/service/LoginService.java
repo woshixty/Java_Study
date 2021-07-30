@@ -27,13 +27,13 @@ public interface LoginService {
 	 * @param
 	 * @return
 	 */
-	public Map<String, String> route(LoginVo loginVo) throws UnknownAccountException,IncorrectCredentialsException;
+	Map<String, String> route(LoginVo loginVo) throws UnknownAccountException,IncorrectCredentialsException;
 
 	/**
 	 * @Description jwt方式登录
-	 @param loginVo 登录参数
-	  * @return
+	 * @param loginVo 登录参数
+	 * @return
 	 */
-	public BaseResponse routeForJwt(LoginVo loginVo) throws UnknownAccountException,IncorrectCredentialsException;
+	BaseResponse routeForJwt(LoginVo loginVo) throws UnknownAccountException,IncorrectCredentialsException;
 
 }

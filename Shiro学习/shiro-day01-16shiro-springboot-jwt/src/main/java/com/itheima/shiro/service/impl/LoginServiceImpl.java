@@ -1,12 +1,3 @@
-/*
- * <b>文件名</b>：LoginServiceImpl.java
- *
- * 文件描述：
- *
- *
- * 2017年11月16日  下午4:17:46
- */
-
 package com.itheima.shiro.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
@@ -92,7 +83,7 @@ public class LoginServiceImpl implements LoginService {
             jwtToken = jwtTokenManager.issuedToken("system", subject.getSession().getTimeout(), sessionId, claims);
             //缓存加载
             this.loadAuthorityToCache(simpleToken);
-        }catch (Exception e){
+        } catch (Exception e){
             BaseResponse baseResponse = new BaseResponse(ShiroConstant.LOGIN_FAILURE_CODE, ShiroConstant.LOGIN_FAILURE_MESSAGE);
         }
         BaseResponse baseResponse = new BaseResponse(ShiroConstant.LOGIN_SUCCESS_CODE, ShiroConstant.LOGIN_SUCCESS_MESSAGE,jwtToken);

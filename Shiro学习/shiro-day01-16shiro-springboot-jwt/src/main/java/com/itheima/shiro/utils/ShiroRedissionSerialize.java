@@ -17,7 +17,7 @@ public class ShiroRedissionSerialize {
             return null;
         }
         //流的操作
-        ByteArrayOutputStream bos = null;
+        ByteArrayOutputStream bos;
         ObjectOutputStream oos =null;
         String encodeBase64 = null;
         bos = new ByteArrayOutputStream();
@@ -49,7 +49,7 @@ public class ShiroRedissionSerialize {
             return null;
         }
         //流从操作
-        ByteArrayInputStream bis =null;
+        ByteArrayInputStream bis;
         ObjectInputStream ois = null;
         Object object = null;
         //转换对象
@@ -69,7 +69,6 @@ public class ShiroRedissionSerialize {
                 e.printStackTrace();
                 log.error("流读取异常：{}",e);
             }
-
         }
         return object;
     }

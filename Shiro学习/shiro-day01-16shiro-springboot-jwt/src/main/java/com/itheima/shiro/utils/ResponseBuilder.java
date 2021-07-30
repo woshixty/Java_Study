@@ -1,11 +1,6 @@
 package com.itheima.shiro.utils;
 
-import com.itheima.shiro.base.BaseResponse;
-import com.itheima.shiro.enums.BaseEnum;
-import com.itheima.shiro.response.MultiResponse;
-import com.itheima.shiro.response.PageResponse;
-import com.itheima.shiro.response.SingleResponse;
-
+import com.itheima.shiro.core.base.BaseResponse;
 import java.util.List;
 
 /**

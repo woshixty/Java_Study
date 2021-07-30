@@ -14,7 +14,6 @@ import java.io.IOException;
  * @Description：自定义jwt的资源校验
  */
 public class JwtPermsFilter extends PermissionsAuthorizationFilter {
-
     /**
      * @Description 访问拒绝时调用
      */

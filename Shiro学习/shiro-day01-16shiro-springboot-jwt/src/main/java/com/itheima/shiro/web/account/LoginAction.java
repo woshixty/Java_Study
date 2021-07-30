@@ -59,7 +59,7 @@ public class LoginAction {
 	public ModelAndView usersLongin(LoginVo loginVo){
 		ModelAndView modelAndView = new ModelAndView("/account/login");
 		String shiroLoginFailure=null;
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<>();
 		try {
 			loginVo.setSystemCode(ShiroConstant.PLATFORM_MGT);
 			loginService.route(loginVo);
