@@ -39,6 +39,12 @@ public class TCPServer {
         if (mListener != null) {
             mListener.exit();
         }
+        //每个客户端退出
+        for (ClientHandler clientHandler : clientHandlerList) {
+            clientHandler.exit();
+        }
+        //清空客户端列表
+        clientHandlerList.clear();
     }
 
     public void broadcast(String str) {
@@ -46,12 +52,6 @@ public class TCPServer {
         for (ClientHandler clientHandler : clientHandlerList) {
             clientHandler.send(str);
         }
-        //每个客户端退出
-        for (ClientHandler clientHandler : clientHandlerList) {
-            clientHandler.exit();
-        }
-        //清空客户端列表
-        clientHandlerList.clear();
     }
 
     /**
@@ -86,6 +86,7 @@ public class TCPServer {
                     });
                     // 读取数据并打印
                     clientHandler.readToPrint();
+                    clientHandlerList.add(clientHandler);
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.out.println("客户端连接异常：" + e.getMessage());

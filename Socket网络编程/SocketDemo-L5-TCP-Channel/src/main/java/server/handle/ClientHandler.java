@@ -68,8 +68,7 @@ public class ClientHandler {
             super.run();
             try {
                 // 得到输入流，用于接收数据
-                BufferedReader socketInput = new BufferedReader(new InputStreamReader(
-                        socket.getInputStream()));
+                BufferedReader socketInput = new BufferedReader(new InputStreamReader(inputStream));
                 do {
                     // 客户端拿到一条数据
                     String str = socketInput.readLine();
