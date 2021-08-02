@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="SocketDemo-L5-TCP" />
         <module name="SocketDemo-L5-TCp" />
+        <module name="SocketDemo-L5-TCP-Channel" />
       </profile>
     </annotationProcessing>
   </component>
