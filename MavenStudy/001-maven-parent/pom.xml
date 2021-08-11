@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>001-maven-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <modules>
+        <module>../003-maven-web</module>
+        <module>../002-maven-java</module>
+    </modules>
+
+    <!--
+        packing标签指的是打包方式
+        默认为jar，如果pom文件中没有packing标签那么默认就是答jar包
+    -->
+
+    <!--
+        pom是项目对象模型（Project、Object、Module）该文件可以被继承
+        maven多模块管理的目的就是让子模块的pom文件继承父工程的pom文件
+    -->
+
+    <!--
+        maven父工程必须遵循以下两点要求：
+        1、packing标签的文本内容必须设置为pom
+        2、将src删除掉
+    -->
+
+
+</project>
