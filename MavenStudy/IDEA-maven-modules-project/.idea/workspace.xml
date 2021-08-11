@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b4a1a65a-3c8a-40d2-b651-7df816657ffe" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../ElasticSearch学习/es-test/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../ElasticSearch学习/es-test/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../ElasticSearch学习/es-test/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../ElasticSearch学习/es-test/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../ElasticSearch学习/es-test/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../ElasticSearch学习/es-test/es-test.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../ElasticSearch学习/es-test/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../ElasticSearch学习/es-test/src/main/java/com/xty/es/test/ESTest_Client.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../ElasticSearch学习/es-test/src/main/java/com/xty/es/test/ESTest_Index_Create.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../ElasticSearch学习/es-test/src/main/java/com/xty/es/test/ESTest_Index_Search.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../001-maven-parent/001-maven-parent.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../001-maven-parent/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../002-maven-java/002-maven-java.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../002-maven-java/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../003-maven-web/003-maven-web.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../003-maven-web/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Test/Test.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Test/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../SeleniumStudy/selenium.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Socket网络编程/ChatRoom-L6/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Socket网络编程/ChatRoom-L6/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Socket网络编程/ChatRoom-L6/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Socket网络编程/ChatRoom-L6/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Socket网络编程/ChatRoom-L6/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Socket网络编程/ChatRoom-L6/ChatRoom-L6.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Socket网络编程/ChatRoom-L6/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/.idea/$CACHE_FILE$" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/.idea/dictionaries/mr_stark.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/selenium.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/src/main/html/homework.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/src/main/java/Bilibili.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/src/main/java/HelloWorld.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/src/main/java/Laofengwei.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/src/main/java/TestBeep.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/src/main/java/YKLM.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/target/classes/Bilibili.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/target/classes/HelloWorld.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/target/classes/Laofengwei.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/target/classes/TestBeep.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../selenium/target/classes/YKLM.class" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="C:/maven/apache-maven-3.6.3" />
+        <option name="userSettingsFile" value="C:\apache-maven-3.6.3\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="MavenRunner">
+    <option name="jreName" value="1.8" />
+  </component>
+  <component name="ProjectId" id="1wZwSFgDWDOdNwAjevqAN1APQEc" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="jdk.selected.JAVA_MODULE" value="1.8" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.24878444" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.runner" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b4a1a65a-3c8a-40d2-b651-7df816657ffe" name="Default Changelist" comment="" />
+      <created>1628679417589</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1628679417589</updated>
+      <workItem from="1628679419651" duration="113000" />
+      <workItem from="1628679578738" duration="368000" />
+      <workItem from="1628679961770" duration="2428000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+</project>
