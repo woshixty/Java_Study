@@ -9,7 +9,30 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 public class TCPClient {
-    public static void linkWith(ServerInfo info) throws IOException {
+    //连接
+    private final Socket socket;
+    //读取
+    private final ReadHandler readHandler;
+    //输出
+    private final PrintStream printStream;
+
+    public TCPClient(Socket socket, ReadHandler readHandler) throws IOException {
+        this.socket = socket;
+        this.readHandler = readHandler;
+        printStream = new PrintStream(socket.getOutputStream());
+    }
+
+    public void exit() {
+        readHandler.exit();
+        CloseUtils.close(printStream);
+        CloseUtils.close(socket);
+    }
+
+    public void send(String msg) {
+        printStream.println(msg);
+    }
+
+    public static TCPClient startWith(ServerInfo info) throws IOException {
         Socket socket = new Socket();
         // 超时时间
         socket.setSoTimeout(3000);
@@ -24,19 +47,11 @@ public class TCPClient {
         try {
             ReadHandler readHandler = new ReadHandler(socket.getInputStream());
             readHandler.start();
-
-            // 发送接收数据
-            write(socket);
-
-            // 退出操作
-            readHandler.exit();
+            return new TCPClient(socket, readHandler);
         } catch (Exception e) {
-            System.out.println("异常关闭");
+            System.out.println("连接异常");
         }
-
-        // 释放资源
-        socket.close();
-        System.out.println("客户端已退出～");
+        return null;
     }
 
     private static void write(Socket client) throws IOException {
