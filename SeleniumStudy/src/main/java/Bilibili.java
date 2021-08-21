@@ -10,7 +10,7 @@ public class Bilibili {
 
     public static void main(String[] args) {
         //设置驱动
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\qyyzx\\Desktop\\chromedriver_win32\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\qyyzx\\Desktop\\chromedriver\\chromedriver.exe");
         //创建ChromeDriver对象
         ChromeDriver driver = new ChromeDriver();
         //创建窗口最大化
