@@ -30,4 +30,12 @@ public class IoSelectorProvider implements IoProvider {
     public void close() throws IOException {
 
     }
+
+    private void startRead() {
+        Thread thread = new Thread("Clink IoSelector ReadSelector Thread") {
+            @Override
+            public void run() {
+            }
+        };
+    }
 }
