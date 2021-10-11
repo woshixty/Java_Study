@@ -32,6 +32,12 @@ public class IoSelectorProvider implements IoProvider {
 
     private final ExecutorService inputHandlePool;
     private final ExecutorService outputHandlePool;
+    private SocketChannel channel;
+    private Selector selector;
+    private int registerOps;
+    private AtomicBoolean locker;
+    private HashMap<SelectionKey, Runnable> map;
+    private Runnable runnable;
 
     public IoSelectorProvider() throws IOException {
         readSelector = Selector.open();
@@ -48,15 +54,13 @@ public class IoSelectorProvider implements IoProvider {
     }
 
     @Override
-    public boolean registerInput(SocketChannel channel, HandleInputCallback callback) throws ClosedChannelException {
-        channel.register(readSelector, SelectionKey.OP_READ);
-
-        return false;
+    public boolean registerInput(SocketChannel channel, HandleInputCallback callback) {
+        return registerSelection(channel, readSelector, SelectionKey.OP_READ, inRegInput, inputCallbackMap, callback) != null;
     }
 
     @Override
     public boolean registerOutput(SocketChannel channel, HandleOutputCallback callback) {
-        return false;
+        return registerSelection(channel, writeSelector, SelectionKey.OP_WRITE, inRegOutput, outputCallbackMap, callback) != null;
     }
 
     @Override
@@ -87,8 +91,7 @@ public class IoSelectorProvider implements IoProvider {
         }
     }
 
-    private static void handleSelection(SelectionKey key,
-                                        int keyOps,
+    private static void handleSelection(SelectionKey key, int keyOps,
                                         HashMap<SelectionKey, Runnable> map,
                                         ExecutorService pool) {
         //重点
@@ -98,6 +101,7 @@ public class IoSelectorProvider implements IoProvider {
         try {
             runnable = map.get(key);
         } catch (Exception ignored) {
+            ignored.printStackTrace();
         }
         if (runnable != null && !pool.isShutdown()) {
             //异步调度
@@ -135,17 +139,36 @@ public class IoSelectorProvider implements IoProvider {
         thread.start();
     }
 
-    public void register(SocketChannel channel, Selector selector, int registerOps,
-                         AtomicBoolean locker, HashMap<SelectionKey, Runnable> map, Runnable runnable) {
+    public SelectionKey registerSelection(SocketChannel channel, Selector selector, int registerOps,
+                                 AtomicBoolean locker, HashMap<SelectionKey, Runnable> map, Runnable runnable) {
         synchronized (locker) {
             //设置锁定状态
             locker.set(true);
             try {
-
+                //喚醒当前selector，让selector不处于select()状态
+                selector.wakeup();
+                SelectionKey key = null;
+                //查询是否已经注册过
+                if (channel.isRegistered()) {
+                    key = channel.keyFor(selector);
+                    if (key != null) {
+                        key.interestOps(key.readyOps() | registerOps);
+                    }
+                }
+                if (key == null) {
+                    //注册selector得到key
+                    key = channel.register(selector, registerOps);
+                    //注册回调
+                    map.put(key, runnable);
+                }
+                return key;
+            } catch (ClosedChannelException e) {
+                return null;
             } finally {
                 //解除锁定状态
                 locker.set(false);
                 try {
+                    //通知
                     locker.notify();
                 } catch (Exception e) {
 
