@@ -1,5 +1,6 @@
 package net.qiujuer.library.clink.impl;
 
+import com.sun.org.apache.bcel.internal.generic.Select;
 import net.qiujuer.library.clink.core.IoProvider;
 
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,9 +66,9 @@ public class IoSelectorProvider implements IoProvider {
         return registerSelection(channel, writeSelector, SelectionKey.OP_WRITE, inRegOutput, outputCallbackMap, callback) != null;
     }
 
+    //解除注册
     @Override
     public void unRegisterInput(SocketChannel channel) {
-
     }
 
     @Override
@@ -169,8 +171,9 @@ public class IoSelectorProvider implements IoProvider {
         thread.start();
     }
 
-    public SelectionKey registerSelection(SocketChannel channel, Selector selector, int registerOps,
-                                          AtomicBoolean locker, HashMap<SelectionKey, Runnable> map, Runnable runnable) {
+    private static SelectionKey registerSelection(SocketChannel channel, Selector selector, int registerOps,
+                                                 AtomicBoolean locker, HashMap<SelectionKey, Runnable> map,
+                                                 Runnable runnable) {
         synchronized (locker) {
             //设置锁定状态
             locker.set(true);
@@ -205,6 +208,11 @@ public class IoSelectorProvider implements IoProvider {
                 }
             }
         }
+    }
+
+    private static void unRegisterSelection(SocketChannel channel, Select select, Map<SelectionKey, Runnable> map) {
+        //是注册.的状态
+        if ()
     }
 
     static class IoProviderThreadFactory implements ThreadFactory {
