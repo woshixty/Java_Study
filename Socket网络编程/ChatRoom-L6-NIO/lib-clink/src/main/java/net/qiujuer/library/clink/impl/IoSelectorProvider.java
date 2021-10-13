@@ -23,6 +23,7 @@ public class IoSelectorProvider implements IoProvider {
     //是否处于注册Output过程中
     private final AtomicBoolean inRegOutput = new AtomicBoolean(false);
 
+    //读和写分开
     private final Selector readSelector;
     private final Selector writeSelector;
 
@@ -30,8 +31,10 @@ public class IoSelectorProvider implements IoProvider {
     private final HashMap<SelectionKey, Runnable> inputCallbackMap = new HashMap<>();
     private final HashMap<SelectionKey, Runnable> outputCallbackMap = new HashMap<>();
 
+    //读和写的线程池分开
     private final ExecutorService inputHandlePool;
     private final ExecutorService outputHandlePool;
+
     private SocketChannel channel;
     private Selector selector;
     private int registerOps;
@@ -42,13 +45,11 @@ public class IoSelectorProvider implements IoProvider {
     public IoSelectorProvider() throws IOException {
         readSelector = Selector.open();
         writeSelector = Selector.open();
-
         inputHandlePool = Executors.newFixedThreadPool(4,
                 new IoProviderThreadFactory("IoProvider-Input-Thread-"));
         outputHandlePool = Executors.newFixedThreadPool(4,
                 new IoProviderThreadFactory("IoProvider-Output-Thread-"));
-
-        // 开始输出输入的监听
+        //开始输出输入的监听
         startRead();
         startWrite();
     }
@@ -109,6 +110,7 @@ public class IoSelectorProvider implements IoProvider {
         }
     }
 
+    //读取的线程
     private void startRead() {
         Thread thread = new Thread("Clink IoSelectorProvider ReadSelector Thread") {
             @Override
@@ -139,8 +141,36 @@ public class IoSelectorProvider implements IoProvider {
         thread.start();
     }
 
+    private void startWrite() {
+        Thread thread = new Thread("Clink IoSelectorProvider WriteSelector Thread") {
+            @Override
+            public void run() {
+                while (!isClosed.get()) {
+                    try {
+                        if (writeSelector.select() == 0) {
+                            waitSelection(inRegOutput);
+                            continue;
+                        }
+
+                        Set<SelectionKey> selectionKeys = writeSelector.selectedKeys();
+                        for (SelectionKey selectionKey : selectionKeys) {
+                            if (selectionKey.isValid()) {
+                                handleSelection(selectionKey, SelectionKey.OP_WRITE, outputCallbackMap, outputHandlePool);
+                            }
+                        }
+                        selectionKeys.clear();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        thread.setPriority(Thread.MAX_PRIORITY);
+        thread.start();
+    }
+
     public SelectionKey registerSelection(SocketChannel channel, Selector selector, int registerOps,
-                                 AtomicBoolean locker, HashMap<SelectionKey, Runnable> map, Runnable runnable) {
+                                          AtomicBoolean locker, HashMap<SelectionKey, Runnable> map, Runnable runnable) {
         synchronized (locker) {
             //设置锁定状态
             locker.set(true);
@@ -175,34 +205,6 @@ public class IoSelectorProvider implements IoProvider {
                 }
             }
         }
-    }
-
-    private void startWrite() {
-        Thread thread = new Thread("Clink IoSelectorProvider WriteSelector Thread") {
-            @Override
-            public void run() {
-                while (!isClosed.get()) {
-                    try {
-                        if (writeSelector.select() == 0) {
-                            waitSelection(inRegOutput);
-                            continue;
-                        }
-
-                        Set<SelectionKey> selectionKeys = writeSelector.selectedKeys();
-                        for (SelectionKey selectionKey : selectionKeys) {
-                            if (selectionKey.isValid()) {
-                                handleSelection(selectionKey, SelectionKey.OP_WRITE, outputCallbackMap, outputHandlePool);
-                            }
-                        }
-                        selectionKeys.clear();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        thread.setPriority(Thread.MAX_PRIORITY);
-        thread.start();
     }
 
     static class IoProviderThreadFactory implements ThreadFactory {

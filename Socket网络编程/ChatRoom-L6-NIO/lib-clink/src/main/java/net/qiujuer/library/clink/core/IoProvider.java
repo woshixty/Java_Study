@@ -1,11 +1,10 @@
 package net.qiujuer.library.clink.core;
 
 import java.io.Closeable;
-import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SocketChannel;
 
 public interface IoProvider extends Closeable {
-    boolean registerInput(SocketChannel channel, HandleInputCallback callback) throws ClosedChannelException;
+    boolean registerInput(SocketChannel channel, HandleInputCallback callback);
 
     boolean registerOutput(SocketChannel channel, HandleOutputCallback callback);
 
@@ -23,13 +22,18 @@ public interface IoProvider extends Closeable {
     }
 
     abstract class HandleOutputCallback implements Runnable {
+        private Object attach;
 
         @Override
         public final void run() {
-            canProviderOutput();
+            canProviderOutput(attach);
         }
 
-        protected abstract void canProviderOutput();
+        public final void setAttach(Object attach) {
+            this.attach = attach;
+        }
+
+        protected abstract void canProviderOutput(Object attach);
     }
 
 }
