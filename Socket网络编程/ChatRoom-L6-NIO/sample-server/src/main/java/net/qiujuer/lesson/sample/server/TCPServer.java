@@ -88,8 +88,6 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
     //新消息到来的时候
     @Override
     public void onNewMessageArrived(ClientHandler handler, String msg) {
-        //将消息打印到屏幕
-        System.out.println("Received-" + handler.getClientInfo() + ":" + msg);
         //异步提交转发任务
         forwardingThreadPoolExecutor.execute(() -> {
             synchronized (TCPServer.this) {
@@ -114,9 +112,9 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
             //将成员变量转化为局部变量
             Selector selector = TCPServer.this.selector;
             System.out.println("服务器准备就绪～");
-            // 等待客户端连接
+            //等待客户端连接
             do {
-                // 得到客户端
+                //得到客户端
                 Socket client;
                 try {
                     if (selector.select() == 0) {
@@ -141,10 +139,9 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
                             SocketChannel socketChannel = serverSocketChannel.accept();
 
                             try {
-                                // 客户端构建异步线程
+                                //客户端构建异步线程
                                 ClientHandler clientHandler = new ClientHandler(socketChannel, TCPServer.this);
-                                // 读取数据并打印
-                                clientHandler.readToPrint();
+                                //添加同步处理
                                 synchronized (TCPServer.this) {
                                     clientHandlerList.add(clientHandler);
                                 }

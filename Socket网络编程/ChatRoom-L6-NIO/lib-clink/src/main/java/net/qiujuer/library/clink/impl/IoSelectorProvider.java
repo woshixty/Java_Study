@@ -2,6 +2,7 @@ package net.qiujuer.library.clink.impl;
 
 import com.sun.org.apache.bcel.internal.generic.Select;
 import net.qiujuer.library.clink.core.IoProvider;
+import net.qiujuer.library.clink.utils.CloseUtils;
 
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
@@ -69,16 +70,29 @@ public class IoSelectorProvider implements IoProvider {
     //解除注册
     @Override
     public void unRegisterInput(SocketChannel channel) {
+        unRegisterSelection(channel, readSelector, inputCallbackMap);
     }
 
     @Override
     public void unRegisterOutput(SocketChannel channel) {
-
+        unRegisterSelection(channel, writeSelector, outputCallbackMap);
     }
 
     @Override
     public void close() throws IOException {
-
+        if (isClosed.compareAndSet(false, true)) {
+            //关闭线程池
+            inputHandlePool.shutdown();
+            outputHandlePool.shutdown();
+            //清空map
+            inputCallbackMap.clear();
+            outputCallbackMap.clear();
+            //唤醒selector
+            readSelector.wakeup();
+            writeSelector.wakeup();
+            //关闭
+            CloseUtils.close(readSelector, writeSelector);
+        }
     }
 
     private static void waitSelection(final AtomicBoolean locker) {
@@ -153,7 +167,6 @@ public class IoSelectorProvider implements IoProvider {
                             waitSelection(inRegOutput);
                             continue;
                         }
-
                         Set<SelectionKey> selectionKeys = writeSelector.selectedKeys();
                         for (SelectionKey selectionKey : selectionKeys) {
                             if (selectionKey.isValid()) {
@@ -210,9 +223,18 @@ public class IoSelectorProvider implements IoProvider {
         }
     }
 
-    private static void unRegisterSelection(SocketChannel channel, Select select, Map<SelectionKey, Runnable> map) {
-        //是注册.的状态
-        if ()
+    //解除注册
+    private static void unRegisterSelection(SocketChannel channel, Selector selector, Map<SelectionKey, Runnable> map) {
+        //是注册的状态
+        if (channel.isRegistered()) {
+            SelectionKey key = channel.keyFor(selector);
+            if (key != null) {
+                //取消监听
+                key.cancel();
+                map.remove(key);
+                selector.wakeup();
+            }
+        }
     }
 
     static class IoProviderThreadFactory implements ThreadFactory {
