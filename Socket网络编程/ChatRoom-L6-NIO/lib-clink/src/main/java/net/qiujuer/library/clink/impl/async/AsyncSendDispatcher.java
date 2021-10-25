@@ -26,6 +26,7 @@ public class AsyncSendDispatcher implements SendDispatcher {
     private int total;
     //当前packet发送的进度
     private int position;
+    private final AtomicBoolean isClosed = new AtomicBoolean(false);
 
     public AsyncSendDispatcher(Sender sender) {
         this.sender = sender;
@@ -116,6 +117,13 @@ public class AsyncSendDispatcher implements SendDispatcher {
 
     @Override
     public void close() throws IOException {
-
+        if (isClosed.compareAndSet(false, true)) {
+            isSending.set(false);
+            SendPacket packet = this.packetTemp;
+            if (packet != null) {
+                packetTemp = null;
+                CloseUtils.close(packet);
+            }
+        }
     }
 }

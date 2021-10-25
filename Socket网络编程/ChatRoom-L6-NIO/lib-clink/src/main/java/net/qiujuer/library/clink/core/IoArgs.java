@@ -99,6 +99,10 @@ public class IoArgs {
         return buffer.getInt();
     }
 
+    public int capacity() {
+        return buffer.capacity();
+    }
+
     public interface IoArgsEventListener {
         void onStarted(IoArgs args);
 
