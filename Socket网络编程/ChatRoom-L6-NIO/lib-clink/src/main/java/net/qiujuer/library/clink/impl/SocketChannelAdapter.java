@@ -21,6 +21,8 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
     //发送与接收的回调
     private IoArgs.IoArgsEventListener receiveIoEventListener;
     private IoArgs.IoArgsEventListener sendIoEventListener;
+    //外层传递进来的IoArgs
+    private IoArgs receiveArgsTemp;
 
     public SocketChannelAdapter(SocketChannel channel, IoProvider ioProvider,
                                 OnChannelStatusChangedListener listener) throws IOException {
@@ -31,15 +33,21 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
         channel.configureBlocking(false);
     }
 
-    //接收
     @Override
-    public boolean receiveAsync(IoArgs.IoArgsEventListener listener) throws IOException {
+    public void setReceiveListener(IoArgs.IoArgsEventListener listener) {
+        receiveIoEventListener = listener;
+    }
+
+    //接收消息
+    @Override
+    public boolean receiveAsync(IoArgs args) throws IOException {
         //channel已经关闭
         if (isClosed.get()) {
             throw new IOException("Current channel is closed!");
         }
-        //赋值
-        receiveIoEventListener = listener;
+
+        receiveArgsTemp = args;
+
         //看看接收是否成功
         return ioProvider.registerInput(channel, inputCallback);
     }
@@ -83,7 +91,7 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
             }
             try {
                 //具体的读取操作
-                if (args.read(channel) > 0 && listener != null) {
+                if (args.readFrom(channel) > 0 && listener != null) {
                     //读取完成回调
                     listener.onCompleted(args);
                 } else {
@@ -98,7 +106,25 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
     private final IoProvider.HandleOutputCallback outputCallback = new IoProvider.HandleOutputCallback() {
         @Override
         protected void canProviderOutput(Object attach) {
+            if (isClosed.get()) {
+                return;
+            }
+            IoArgs args = receiveArgsTemp;
+            IoArgs.IoArgsEventListener listener = sendIoEventListener;
 
+            listener.onStarted(args);
+
+            try {
+                //具体的读取操作
+                if (args.writeTo(channel) > 0) {
+                    //读取完成回调
+                    listener.onCompleted(args);
+                } else {
+                    throw new IOException("Cannot readFrom any data!");
+                }
+            } catch (IOException ignored) {
+                CloseUtils.close(SocketChannelAdapter.this);
+            }
         }
     };
 

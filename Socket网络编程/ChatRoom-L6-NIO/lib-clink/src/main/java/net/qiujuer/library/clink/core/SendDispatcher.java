@@ -1,5 +1,7 @@
 package net.qiujuer.library.clink.core;
 
+import java.io.Closeable;
+
 /**
  * @author qyyzxty@icloud.com
  * @data 2021/10/24
@@ -7,7 +9,7 @@ package net.qiujuer.library.clink.core;
  * 缓存所有需要发送的数据，通过队列进行发送
  * 并且在发送数据时，实现是对手数据的基本封装
  **/
-public interface SendDispatcher {
+public interface SendDispatcher extends Closeable {
     /**
      * 发送一份数据
      * @param packet

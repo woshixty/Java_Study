@@ -3,6 +3,8 @@ package net.qiujuer.library.clink.box;
 import net.qiujuer.library.clink.core.ReceivePacket;
 import sun.management.counter.perf.PerfInstrumentation;
 
+import java.io.IOException;
+
 /**
  * @author qyyzxty@icloud.com
  * @data 2021/10/24
@@ -28,5 +30,10 @@ public class StringReceivePacket extends ReceivePacket {
 
     public void setBuffer(int len) {
         this.buffer = new byte[len];
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
 }
