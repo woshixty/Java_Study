@@ -3,6 +3,8 @@ package net.qiujuer.library.clink.core;
 import net.qiujuer.library.clink.box.StringReceivePacket;
 import net.qiujuer.library.clink.box.StringSendPacket;
 import net.qiujuer.library.clink.impl.SocketChannelAdapter;
+import net.qiujuer.library.clink.impl.async.AsyncReceiveDispatcher;
+import net.qiujuer.library.clink.impl.async.AsyncSendDispatcher;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -27,6 +29,11 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
         this.receiver = adapter;
         //读取数据
 //        readNextMessage();
+        sendDispatcher = new AsyncSendDispatcher(sender);
+        receiveDispatcher = new AsyncReceiveDispatcher(receiver, receivePacketCallback);
+
+        //启动接受
+        receiveDispatcher.start();
     }
 
     public void sent(String msg) {
@@ -47,7 +54,11 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
 
     @Override
     public void close() throws IOException {
-
+        receiveDispatcher.close();
+        sendDispatcher.close();
+        sender.close();
+        receiver.close();
+        channel.close();
     }
 
     @Override

@@ -1,11 +1,18 @@
 package net.qiujuer.lesson.sample.client;
 
 import net.qiujuer.lesson.sample.client.bean.ServerInfo;
+import net.qiujuer.library.clink.core.IoContext;
+import net.qiujuer.library.clink.impl.IoSelectorProvider;
 
 import java.io.*;
 
 public class Client {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        //初始化上下文
+        IoContext.setup()
+                .ioProvider(new IoSelectorProvider())
+                .start();
+
         ServerInfo info = UDPSearcher.searchServer(10000);
         System.out.println("Server:" + info);
         TCPClient tcpClient = null;
@@ -24,6 +31,7 @@ public class Client {
                 }
             }
         }
+        IoContext.close();
     }
 
     public static void write(TCPClient tcpClient) throws IOException {
