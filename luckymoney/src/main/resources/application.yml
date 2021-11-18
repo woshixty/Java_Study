@@ -1,7 +1,0 @@
-server:
-  servlet:
-    context-path: /luckymoney
-  port: 8080
-
-minMoney: 1
-description: 最少要发1元
