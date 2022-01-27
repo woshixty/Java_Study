@@ -1,6 +1,6 @@
 package fengkuang.code_6_3;
 
-import lombok.var;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 

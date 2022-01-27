@@ -1,6 +1,5 @@
 package fengkuang.code_7_1;
 
-import lombok.var;
 /**
  * @author qyyzxty@icloud.com
  * 2021/6/6
