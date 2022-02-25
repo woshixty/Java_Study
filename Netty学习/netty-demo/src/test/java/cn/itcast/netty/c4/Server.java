@@ -22,6 +22,7 @@ public class Server {
 
         //1 创建服务器
         ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.configureBlocking(false);  //非阻塞模式
 
         //2 绑定监听端口
         ssc.bind(new InetSocketAddress(8080));
@@ -31,18 +32,23 @@ public class Server {
         while (true) {
             //4 accept建立与客户端连接，SocketChannel用来与客户端之间通信
             log.debug("connecting...");
-            SocketChannel sc = ssc.accept();
-            log.debug("connected...");
-            channels.add(sc);
+            SocketChannel sc = ssc.accept();  //阻塞方法，线程停止，改了以后变成非阻塞模式，如果没有连接建立，sc是null
+            if (sc != null) {
+                log.debug("connected...");
+                sc.configureBlocking(false);  //设置为非阻塞模式
+                channels.add(sc);
+            }
             for (SocketChannel channel : channels) {
                 //5 接受客户端发过来的数据
                 log.debug("before read... {}", channel);
-                channel.read(buffer);
+                final int read = channel.read(buffer);//阻塞方法，线程停止，设置以后变为非阻塞，没有读到数据就返回0
                 //切换至读模式
-                buffer.flip();
-                debugRead(buffer);
-                buffer.clear();
-                log.debug("after read... {}", channel);
+                if (read > 0) {
+                    buffer.flip();
+                    debugRead(buffer);
+                    buffer.clear();
+                    log.debug("after read... {}", channel);
+                }
             }
         }
     }
