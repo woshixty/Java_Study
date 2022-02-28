@@ -6,15 +6,36 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import static cn.itcast.netty.c1.ByteBufferUtil.debugAll;
 import static cn.itcast.netty.c1.ByteBufferUtil.debugRead;
 
 @Slf4j
 public class NewServer {
+
+    private static void split(ByteBuffer source) {
+        source.flip();
+        for (int i = 0; i < source.limit(); i++) {
+            // 找到一条完整消息
+            if (source.get(i) == '\n') {
+                int length = i + 1 - source.position();
+                // 把这条完整消息存入新的 ByteBuffer
+                ByteBuffer target = ByteBuffer.allocate(length);
+                // 从 source 读，向 target 写
+                for (int j = 0; j < length; j++) {
+                    target.put(source.get());
+                }
+                debugAll(target);
+            }
+        }
+        source.compact();
+    }
+
     public static void main(String[] args) throws IOException {
         //1 创建Selector 管理多个channel
         Selector selector = Selector.open();
@@ -57,11 +78,23 @@ public class NewServer {
                     scKey.interestOps(SelectionKey.OP_READ);
                     log.debug("3{}", sc);
                 } else if (key.isReadable()) {
-                    SocketChannel channel = (SocketChannel) key.channel();
-                    ByteBuffer buffer = ByteBuffer.allocate(16);
-                    channel.read(buffer);
-                    buffer.flip();
-                    debugRead(buffer);
+                    try {
+                        SocketChannel channel = (SocketChannel) key.channel();
+                        ByteBuffer buffer = ByteBuffer.allocate(16);
+                        final int read = channel.read(buffer);
+                        //如果是正常断开，read的值就是-1
+                        if (read == -1) {
+                            key.cancel();
+                        } else {
+//                            buffer.flip();
+////                            debugRead(buffer);
+//                            System.out.println(Charset.defaultCharset().decode(buffer));
+                            split(buffer);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        key.cancel();  //因为客户端断开了，因此需要将key取消（从selector的keys集合中真正删除key）
+                    }
                 }
 //                key.cancel();
             }
