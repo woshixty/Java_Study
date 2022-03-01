@@ -74,22 +74,33 @@ public class NewServer {
                     ServerSocketChannel channel = (ServerSocketChannel) key.channel();
                     final SocketChannel sc = channel.accept();
                     sc.configureBlocking(false);
-                    SelectionKey scKey = sc.register(selector, 0, null);
+                    ByteBuffer buffer = ByteBuffer.allocate(16);  //attachment
+                    //将一个ByteBuffer作为附件关联到SelectionKey上
+                    SelectionKey scKey = sc.register(selector, 0, buffer);  //将buffer附属到socketChannel上
                     scKey.interestOps(SelectionKey.OP_READ);
                     log.debug("3{}", sc);
                 } else if (key.isReadable()) {
                     try {
                         SocketChannel channel = (SocketChannel) key.channel();
-                        ByteBuffer buffer = ByteBuffer.allocate(16);
+                        //获取对应的附件
+                        ByteBuffer buffer = (ByteBuffer) key.attachment();
                         final int read = channel.read(buffer);
                         //如果是正常断开，read的值就是-1
                         if (read == -1) {
                             key.cancel();
                         } else {
-//                            buffer.flip();
-////                            debugRead(buffer);
-//                            System.out.println(Charset.defaultCharset().decode(buffer));
+                            /**
+                            buffer.flip();
+                            debugRead(buffer);
+                            System.out.println(Charset.defaultCharset().decode(buffer));
                             split(buffer);
+                             */
+                            if (buffer.position() == buffer.limit()) {
+                                ByteBuffer newBuffer = ByteBuffer.allocate(buffer.capacity() * 2);
+                                buffer.flip();
+                                newBuffer.put(buffer);
+                                key.attach(newBuffer);
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
