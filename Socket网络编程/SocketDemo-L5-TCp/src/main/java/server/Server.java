@@ -1,6 +1,7 @@
 package server;
 
 import constants.TCPConstants;
+import constants.UDPConstants;
 
 import java.io.IOException;
 
@@ -12,7 +13,7 @@ public class Server {
             System.out.println("Start TCP server failed!");
             return;
         }
-        UDPProvider.start(TCPConstants.PORT_SERVER);
+        UDPProvider.start(UDPConstants.PORT_SERVER);
         try {
             //noinspection ResultOfMethodCallIgnored
             System.in.read();

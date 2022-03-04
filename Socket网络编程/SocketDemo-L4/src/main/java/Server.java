@@ -84,13 +84,12 @@ public class Server {
                         flag = false;
                         //回送数据
                         socketOutPut.println("bye");
-                        socketOutPut.flush();
                     } else {
                         //回送数据
                         System.out.println(str);
                         socketOutPut.println("回送：" + str.length());
-                        socketOutPut.flush();
                     }
+                    socketOutPut.flush();
                 }while (flag);
                 socketInput.close();
                 socketOutPut.close();
