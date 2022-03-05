@@ -60,12 +60,17 @@ class UDPProvider {
                     // 打印接收到的信息与发送者的信息
                     // 发送者的IP地址
                     String clientIp = receivePack.getAddress().getHostAddress();
+                    //发送者端口
                     int clientPort = receivePack.getPort();
+                    //接收数据长度
                     int clientDataLen = receivePack.getLength();
+                    //接收数据
                     byte[] clientData = receivePack.getData();
+                    //报文合法性标志
                     boolean isValid = clientDataLen >= (UDPConstants.HEADER.length + 2 + 4)
                             && ByteUtils.startsWith(clientData, UDPConstants.HEADER);
 
+                    //打印信息
                     System.out.println("UDPProvider receive form ip:" + clientIp
                             + "\tport:" + clientPort + "\tdataValid:" + isValid);
 
@@ -76,7 +81,12 @@ class UDPProvider {
 
                     // 解析命令与回送端口
                     int index = UDPConstants.HEADER.length;
+                    // https://blog.csdn.net/i6223671/article/details/88924481
+                    // https://www.cnblogs.com/think-in-java/p/5527389.html
+                    // 保证补码的一致性
+                    // 获取命令
                     short cmd = (short) ((clientData[index++] << 8) | (clientData[index++] & 0xff));
+                    // 获取回送端口
                     int responsePort = (((clientData[index++]) << 24) |
                             ((clientData[index++] & 0xff) << 16) |
                             ((clientData[index++] & 0xff) << 8) |
@@ -85,19 +95,21 @@ class UDPProvider {
                     // 判断合法性
                     if (cmd == 1 && responsePort > 0) {
                         // 构建一份回送数据
+                        // 将byte数组转换为Buffer
                         ByteBuffer byteBuffer = ByteBuffer.wrap(buffer);
+                        // 放入验证头
                         byteBuffer.put(UDPConstants.HEADER);
+                        // 放入cmd
                         byteBuffer.putShort((short) 2);
                         byteBuffer.putInt(port);
                         byteBuffer.put(sn);
                         int len = byteBuffer.position();
                         // 直接根据发送者构建一份回送信息
-                        DatagramPacket responsePacket = new DatagramPacket(buffer,
-                                len,
-                                receivePack.getAddress(),
-                                responsePort);
+                        DatagramPacket responsePacket = new DatagramPacket(buffer, len,
+                                receivePack.getAddress(), responsePort);
                         ds.send(responsePacket);
-                        System.out.println("UDPProvider response to:" + clientIp + "\tport:" + responsePort + "\tdataLen:" + len);
+                        System.out.println("UDPProvider response to:" + clientIp +
+                                "\tport:" + responsePort + "\tdataLen:" + len);
                     } else {
                         System.out.println("UDPProvider receive cmd nonsupport; cmd:" + cmd + "\tport:" + port);
                     }

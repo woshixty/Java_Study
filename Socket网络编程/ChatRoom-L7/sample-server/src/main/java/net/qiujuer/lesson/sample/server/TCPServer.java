@@ -43,7 +43,7 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
 
             this.server = server;
 
-
+            // 打印本地服务器信息
             System.out.println("服务器信息：" + server.getLocalAddress().toString());
 
             // 启动客户端监听
@@ -141,7 +141,8 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
 
                             try {
                                 // 客户端构建异步线程
-                                ClientHandler clientHandler = new ClientHandler(socketChannel, TCPServer.this);
+                                ClientHandler clientHandler = new ClientHandler(socketChannel,
+                                        TCPServer.this);
                                 // 添加同步处理
                                 synchronized (TCPServer.this) {
                                     clientHandlerList.add(clientHandler);

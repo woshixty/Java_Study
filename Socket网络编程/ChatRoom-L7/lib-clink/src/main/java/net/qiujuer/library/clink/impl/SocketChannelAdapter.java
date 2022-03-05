@@ -12,8 +12,11 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
+    // 连接关闭标志
     private final AtomicBoolean isClosed = new AtomicBoolean(false);
+    // 面向流的连接套接字的可选通道
     private final SocketChannel channel;
+    // 提供读写事件注册
     private final IoProvider ioProvider;
     private final OnChannelStatusChangedListener listener;
 
@@ -108,7 +111,7 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
         }
     };
 
-
+    // SocketChannel关闭的回调接口
     public interface OnChannelStatusChangedListener {
         void onChannelClosed(SocketChannel channel);
     }

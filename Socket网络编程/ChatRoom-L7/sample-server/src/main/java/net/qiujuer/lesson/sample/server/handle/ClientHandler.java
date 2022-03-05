@@ -2,6 +2,7 @@ package net.qiujuer.lesson.sample.server.handle;
 
 
 import net.qiujuer.library.clink.core.Connector;
+import net.qiujuer.library.clink.utils.CloseUtils;
 
 
 import java.io.IOException;
@@ -12,6 +13,9 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * 客户端处理
+ */
 public class ClientHandler {
     private final Connector connector;
     private final SocketChannel socketChannel;

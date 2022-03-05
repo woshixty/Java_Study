@@ -7,15 +7,24 @@ import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.UUID;
 
+/**
+ * 连接
+ */
 public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatusChangedListener {
     private UUID key = UUID.randomUUID();
     private SocketChannel channel;
     private Sender sender;
     private Receiver receiver;
 
+    /**
+     * 建立连接
+     * @param socketChannel
+     * @throws IOException
+     */
     public void setup(SocketChannel socketChannel) throws IOException {
         this.channel = socketChannel;
 
+        // 单例
         IoContext context = IoContext.get();
         SocketChannelAdapter adapter = new SocketChannelAdapter(channel, context.getIoProvider(), this);
 
@@ -25,6 +34,9 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
         readNextMessage();
     }
 
+    /**
+     * 读取下一条信息
+     */
     private void readNextMessage() {
         if (receiver != null) {
             try {

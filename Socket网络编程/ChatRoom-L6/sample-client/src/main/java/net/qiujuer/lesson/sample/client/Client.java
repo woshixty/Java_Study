@@ -26,6 +26,7 @@ public class Client {
         }
     }
 
+    // 默认的键盘输出
     public static void write(TCPClient tcpClient) throws IOException {
         // 构建键盘输入流
         InputStream in = System.in;

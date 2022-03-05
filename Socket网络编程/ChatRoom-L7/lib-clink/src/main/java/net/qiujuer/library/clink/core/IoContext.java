@@ -2,6 +2,9 @@ package net.qiujuer.library.clink.core;
 
 import java.io.IOException;
 
+/**
+ * 单例的IoContext
+ */
 public class IoContext {
     private static IoContext INSTANCE;
     private final IoProvider ioProvider;

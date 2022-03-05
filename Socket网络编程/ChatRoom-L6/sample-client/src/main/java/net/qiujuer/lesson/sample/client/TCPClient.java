@@ -8,12 +8,13 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+// TCP连接
 public class TCPClient {
-    //连接
+    // 连接
     private final Socket socket;
-    //读取
+    // 读取
     private final ReadHandler readHandler;
-    //输出
+    // 输出
     private final PrintStream printStream;
 
     public TCPClient(Socket socket, ReadHandler readHandler) throws IOException {
@@ -22,16 +23,19 @@ public class TCPClient {
         printStream = new PrintStream(socket.getOutputStream());
     }
 
+    // 退出
     public void exit() {
         readHandler.exit();
         CloseUtils.close(printStream);
         CloseUtils.close(socket);
     }
 
+    // 发送信息入口
     public void send(String msg) {
         printStream.println(msg);
     }
 
+    // 返回连接到TCP服务器的TCPClient
     public static TCPClient startWith(ServerInfo info) throws IOException {
         Socket socket = new Socket();
         // 超时时间
@@ -50,10 +54,12 @@ public class TCPClient {
             return new TCPClient(socket, readHandler);
         } catch (Exception e) {
             System.out.println("连接异常");
+            CloseUtils.close(socket);
         }
         return null;
     }
 
+    // 输出到服务器
     private static void write(Socket client) throws IOException {
         // 构建键盘输入流
         InputStream in = System.in;

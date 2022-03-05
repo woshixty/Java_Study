@@ -6,11 +6,13 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+// 处理客户端
 public class ClientHandler {
     private final Socket socket;
     private final ClientReadHandler readHandler;
     private final ClientWriteHandler writeHandler;
     private final ClientHandlerCallback clientHandlerCallback;
+    // 自身描述信息：自身的地址和端口信息
     private final String clientInfo;
 
     public ClientHandler(Socket socket, ClientHandlerCallback clientHandlerCallback) throws IOException {
@@ -18,6 +20,7 @@ public class ClientHandler {
         this.readHandler = new ClientReadHandler(socket.getInputStream());
         this.writeHandler = new ClientWriteHandler(socket.getOutputStream());
         this.clientHandlerCallback = clientHandlerCallback;
+        // 自身的地址和端口信息
         this.clientInfo = "A[" + socket.getInetAddress() + "]、B[" + socket.getPort() + "]";
         System.out.println("新客户端连接：" + clientInfo);
     }
@@ -34,6 +37,7 @@ public class ClientHandler {
                 " P:" + socket.getPort());
     }
 
+    // 向客户端发送消息
     public void send(String str) {
         writeHandler.send(str);
     }
@@ -47,6 +51,7 @@ public class ClientHandler {
         clientHandlerCallback.onSelfClosed(this);
     }
 
+    // 回调
     public interface ClientHandlerCallback {
         //自身关闭以后进行通知
         void onSelfClosed(ClientHandler handler);
@@ -55,6 +60,7 @@ public class ClientHandler {
         void onNewMessageArrived(ClientHandler handler, String msg);
     }
 
+    // 接收消息线程
     class ClientReadHandler extends Thread {
         private boolean done = false;
         private final InputStream inputStream;
@@ -79,7 +85,7 @@ public class ClientHandler {
                         ClientHandler.this.exitBySelf();
                         break;
                     }
-                    // 打印到屏幕
+                    // 收到消息以后告诉TCP server并将新消息传给TcpServer
                     clientHandlerCallback.onNewMessageArrived(ClientHandler.this, str);
                 } while (!done);
             } catch (Exception e) {
@@ -99,6 +105,7 @@ public class ClientHandler {
         }
     }
 
+    // 向客户端写数据
     class ClientWriteHandler {
         private boolean done = false;
         private final PrintStream printStream;
@@ -116,6 +123,7 @@ public class ClientHandler {
         }
 
         void send(String str) {
+            // 如果某个客户端已经完成，就返回，不向其发送消息
             if (done)
                 return;
             executorService.execute(new WriteRunnable(str));
