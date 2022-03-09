@@ -10,18 +10,17 @@ import java.io.InputStreamReader;
 
 public class Client {
     public static void main(String[] args) {
+        // 通过UDP广播搜索服务器
         ServerInfo info = UDPSearcher.searchServer(10000);
         System.out.println("Server:" + info);
 
         if (info != null) {
             TCPClient tcpClient = null;
-
             try {
                 tcpClient = TCPClient.startWith(info);
                 if (tcpClient == null) {
                     return;
                 }
-
                 write(tcpClient);
             } catch (IOException e) {
                 e.printStackTrace();

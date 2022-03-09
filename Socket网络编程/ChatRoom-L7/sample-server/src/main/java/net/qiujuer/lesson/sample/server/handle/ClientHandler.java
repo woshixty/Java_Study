@@ -25,6 +25,8 @@ public class ClientHandler {
 
     public ClientHandler(SocketChannel socketChannel, ClientHandlerCallback clientHandlerCallback) throws IOException {
         this.socketChannel = socketChannel;
+        this.clientHandlerCallback = clientHandlerCallback;
+        this.clientInfo = socketChannel.getRemoteAddress().toString();
 
         connector = new Connector() {
             @Override
@@ -40,13 +42,11 @@ public class ClientHandler {
             }
         };
         connector.setup(socketChannel);
-
+        // 写Selector，关注写事件
         Selector writeSelector = Selector.open();
         socketChannel.register(writeSelector, SelectionKey.OP_WRITE);
         this.writeHandler = new ClientWriteHandler(writeSelector);
 
-        this.clientHandlerCallback = clientHandlerCallback;
-        this.clientInfo = socketChannel.getRemoteAddress().toString();
         System.out.println("新客户端连接：" + clientInfo);
     }
 
@@ -70,6 +70,7 @@ public class ClientHandler {
         clientHandlerCallback.onSelfClosed(this);
     }
 
+    // 客户端处理回调接口
     public interface ClientHandlerCallback {
         // 自身关闭通知
         void onSelfClosed(ClientHandler handler);
@@ -78,6 +79,7 @@ public class ClientHandler {
         void onNewMessageArrived(ClientHandler handler, String msg);
     }
 
+    // 处理向客户端输出处理
     class ClientWriteHandler {
         private boolean done = false;
         private final Selector selector;
@@ -103,6 +105,7 @@ public class ClientHandler {
             executorService.execute(new WriteRunnable(str));
         }
 
+        // 向客户端秀写入信息线程
         class WriteRunnable implements Runnable {
             private final String msg;
 
@@ -115,18 +118,18 @@ public class ClientHandler {
                 if (ClientWriteHandler.this.done) {
                     return;
                 }
-
                 byteBuffer.clear();
                 byteBuffer.put(msg.getBytes());
                 // 反转操作, 重点
+                // 将指针回到初始位置，limit指针来到指针位置
                 byteBuffer.flip();
-
                 while (!done && byteBuffer.hasRemaining()) {
                     try {
                         int len = socketChannel.write(byteBuffer);
                         // len = 0 合法
                         if (len < 0) {
                             System.out.println("客户端已无法发送数据！");
+                            // 退出当前客户端
                             ClientHandler.this.exitBySelf();
                             break;
                         }

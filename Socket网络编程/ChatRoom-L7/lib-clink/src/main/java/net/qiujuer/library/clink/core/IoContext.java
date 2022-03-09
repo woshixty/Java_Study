@@ -3,6 +3,7 @@ package net.qiujuer.library.clink.core;
 import java.io.IOException;
 
 /**
+ * 上下文
  * 单例的IoContext
  */
 public class IoContext {
@@ -35,11 +36,14 @@ public class IoContext {
         ioProvider.close();
     }
 
+    /**
+     * 启动引导
+     * 构建单例
+     */
     public static class StartedBoot {
         private IoProvider ioProvider;
 
         private StartedBoot() {
-
         }
 
         public StartedBoot ioProvider(IoProvider ioProvider) {

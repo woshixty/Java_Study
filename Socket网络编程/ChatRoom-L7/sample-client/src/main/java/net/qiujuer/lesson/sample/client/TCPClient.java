@@ -1,9 +1,7 @@
 package net.qiujuer.lesson.sample.client;
 
-
 import net.qiujuer.lesson.sample.client.bean.ServerInfo;
 import net.qiujuer.library.clink.utils.CloseUtils;
-
 
 import java.io.*;
 import java.net.Inet4Address;
@@ -11,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+// TCP连接代理类
 public class TCPClient {
     private final Socket socket;
     private final ReadHandler readHandler;
@@ -22,16 +21,19 @@ public class TCPClient {
         this.printStream = new PrintStream(socket.getOutputStream());
     }
 
+    // 退出连接
     public void exit() {
         readHandler.exit();
         CloseUtils.close(printStream);
         CloseUtils.close(socket);
     }
 
+    // 想服务器发送消息
     public void send(String msg) {
         printStream.println(msg);
     }
 
+    // 连接服务器并返回代理
     public static TCPClient startWith(ServerInfo info) throws IOException {
         Socket socket = new Socket();
         // 超时时间
@@ -52,11 +54,10 @@ public class TCPClient {
             System.out.println("连接异常");
             CloseUtils.close(socket);
         }
-
         return null;
     }
 
-
+    // 从服务器读取信息的处理类
     static class ReadHandler extends Thread {
         private boolean done = false;
         private final InputStream inputStream;
@@ -97,6 +98,7 @@ public class TCPClient {
             }
         }
 
+        // 退出并关闭输入流
         void exit() {
             done = true;
             CloseUtils.close(inputStream);

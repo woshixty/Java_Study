@@ -3,7 +3,6 @@ package net.qiujuer.lesson.sample.server;
 import net.qiujuer.lesson.sample.server.handle.ClientHandler;
 import net.qiujuer.library.clink.utils.CloseUtils;
 
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
@@ -17,22 +16,28 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class TCPServer implements ClientHandler.ClientHandlerCallback {
+    // 绑定本地的端口
     private final int port;
     private ClientListener listener;
+    // 交给每一个客户端处理器去处理
     private List<ClientHandler> clientHandlerList = new ArrayList<>();
     private final ExecutorService forwardingThreadPoolExecutor;
     private Selector selector;
     private ServerSocketChannel server;
 
     public TCPServer(int port) {
+        // TCP监听端口
         this.port = port;
         // 转发线程池
         this.forwardingThreadPoolExecutor = Executors.newSingleThreadExecutor();
     }
 
+    // 开启一个TCP服务器
     public boolean start() {
         try {
+            // 打开一个多路复用器
             selector = Selector.open();
+            // 打开一个通道套接字
             ServerSocketChannel server = ServerSocketChannel.open();
             // 设置为非阻塞
             server.configureBlocking(false);
@@ -40,12 +45,9 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
             server.socket().bind(new InetSocketAddress(port));
             // 注册客户端连接到达监听
             server.register(selector, SelectionKey.OP_ACCEPT);
-
             this.server = server;
-
             // 打印本地服务器信息
             System.out.println("服务器信息：" + server.getLocalAddress().toString());
-
             // 启动客户端监听
             ClientListener listener = this.listener = new ClientListener();
             listener.start();
@@ -56,26 +58,26 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
         return true;
     }
 
+    // 关闭TCP服务器
     public void stop() {
         if (listener != null) {
             listener.exit();
         }
-
+        // 关闭channel和选择器
         CloseUtils.close(server);
         CloseUtils.close(selector);
-
+        // 依次将客户端列表关闭
         synchronized (TCPServer.this) {
             for (ClientHandler clientHandler : clientHandlerList) {
                 clientHandler.exit();
             }
-
             clientHandlerList.clear();
         }
-
         // 停止线程池
         forwardingThreadPoolExecutor.shutdownNow();
     }
 
+    // 广播消息
     public synchronized void broadcast(String str) {
         for (ClientHandler clientHandler : clientHandlerList) {
             clientHandler.send(str);
@@ -104,6 +106,7 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
         });
     }
 
+    // 客户端监听线程
     private class ClientListener extends Thread {
         private boolean done = false;
 
@@ -116,29 +119,27 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
             do {
                 // 得到客户端
                 try {
+                    // 阻塞
                     if (selector.select() == 0) {
                         if (done) {
                             break;
                         }
                         continue;
                     }
-
+                    // 当前有哪些事件就绪了
                     Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
                     while (iterator.hasNext()) {
                         if (done) {
                             break;
                         }
-
                         SelectionKey key = iterator.next();
                         iterator.remove();
-
                         // 检查当前Key的状态是否是我们关注的
                         // 客户端到达状态
                         if (key.isAcceptable()) {
                             ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
                             // 非阻塞状态拿到客户端连接
                             SocketChannel socketChannel = serverSocketChannel.accept();
-
                             try {
                                 // 客户端构建异步线程
                                 ClientHandler clientHandler = new ClientHandler(socketChannel,
@@ -156,15 +157,13 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             } while (!done);
-
             System.out.println("服务器已关闭！");
         }
 
         void exit() {
             done = true;
-            // 唤醒当前的阻塞
+            // 唤醒当前的阻塞，退出循环
             selector.wakeup();
         }
     }

@@ -13,8 +13,8 @@ import java.util.Scanner;
 public class ClientTest {
     private static boolean done;
 
-    public static void main(String[] args) throws IOException {
-
+    public static void main(String[] args) {
+        // 获得服务器的信息
         ServerInfo info = UDPSearcher.searchServer(10000);
         System.out.println("Server:" + info);
         if (info == null) {
@@ -76,8 +76,5 @@ public class ClientTest {
         for (TCPClient tcpClient : tcpClients) {
             tcpClient.exit();
         }
-
     }
-
-
 }

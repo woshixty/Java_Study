@@ -9,10 +9,14 @@ import java.util.UUID;
 
 /**
  * 连接
+ * 当关闭的时候的回调：SocketChannelAdapter.OnChannelStatusChangedListener
  */
 public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatusChangedListener {
+    // 代表这个连接的唯一性
     private UUID key = UUID.randomUUID();
+    // 依赖于SocketChannel
     private SocketChannel channel;
+    // 发送者和接收者
     private Sender sender;
     private Receiver receiver;
 
@@ -23,14 +27,13 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
      */
     public void setup(SocketChannel socketChannel) throws IOException {
         this.channel = socketChannel;
-
-        // 单例
+        // 拿到单例
         IoContext context = IoContext.get();
         SocketChannelAdapter adapter = new SocketChannelAdapter(channel, context.getIoProvider(), this);
-
+        //发送和接收
         this.sender = adapter;
         this.receiver = adapter;
-
+        // 开始读取数据
         readNextMessage();
     }
 
@@ -38,6 +41,7 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
      * 读取下一条信息
      */
     private void readNextMessage() {
+        // 判断接收者不为空
         if (receiver != null) {
             try {
                 receiver.receiveAsync(echoReceiveListener);
@@ -57,13 +61,18 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
 
     }
 
-
+    /**
+     * 用来做监听的，监听IO Args的状态
+     * 要将异步接收的数据打印出来
+     */
     private IoArgs.IoArgsEventListener echoReceiveListener = new IoArgs.IoArgsEventListener() {
+        // 开始接收数据
         @Override
         public void onStarted(IoArgs args) {
-
+            System.out.println();
         }
 
+        // 结束接收数据
         @Override
         public void onCompleted(IoArgs args) {
             // 打印
@@ -73,6 +82,7 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
         }
     };
 
+    //
     protected void onReceiveNewMessage(String str) {
         System.out.println(key.toString() + ":" + str);
     }

@@ -14,7 +14,7 @@ public class Server {
         IoContext.setup()
                 .ioProvider(new IoSelectorProvider())
                 .start();
-
+        // 启动TCP搜索服务器
         TCPServer tcpServer = new TCPServer(TCPConstants.PORT_SERVER);
         boolean isSucceed = tcpServer.start();
         if (!isSucceed) {
@@ -22,8 +22,9 @@ public class Server {
             return;
         }
 
+        // 启动UDP提供者，传入参数客户端需要连接的TCP端口
         UDPProvider.start(TCPConstants.PORT_SERVER);
-
+        // 输入一条要发送的消息
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         String str;
         do {
