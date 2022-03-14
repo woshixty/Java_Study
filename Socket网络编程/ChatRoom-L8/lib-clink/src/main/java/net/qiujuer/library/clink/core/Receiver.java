@@ -8,10 +8,18 @@ import java.io.IOException;
  */
 public interface Receiver extends Closeable {
     /**
-     * 异步接收
-     * @param listener  接收状态回调
+     * 单独set监听者的操作
+     * @param listener
+     * @return
+     */
+    void setReceiveListener(IoArgs.IoArgsEventListener listener);
+
+    /**
+     * 异步接收数据接收
+     * IosArgs需要进行一定的参数设置，例如每次读取多大
+     * @param args
      * @return
      * @throws IOException
      */
-    boolean receiveAsync(IoArgs.IoArgsEventListener listener) throws IOException;
+    boolean receiveAsync(IoArgs args) throws IOException;
 }

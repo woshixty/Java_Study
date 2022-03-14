@@ -6,6 +6,7 @@ import net.qiujuer.library.clink.core.SendPacket;
 import net.qiujuer.library.clink.core.Sender;
 import net.qiujuer.library.clink.utils.CloseUtils;
 
+import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -31,6 +32,10 @@ public class AsyncSendDispatcher implements SendDispatcher {
         this.sender = sender;
     }
 
+    /**
+     * 发送包
+     * @param packet
+     */
     @Override
     public void send(SendPacket packet) {
         queue.offer(packet);
@@ -40,6 +45,10 @@ public class AsyncSendDispatcher implements SendDispatcher {
         }
     }
 
+    /**
+     * 拿发送包
+     * @return
+     */
     private SendPacket takePacket() {
         SendPacket packet = queue.poll();
         if (packet != null && packet.isCanceled()) {
@@ -49,6 +58,9 @@ public class AsyncSendDispatcher implements SendDispatcher {
         return packet;
     }
 
+    /**
+     * 发送下一个包
+     */
     private void sendNextPacket() {
         SendPacket temp = packetTemp;
         if (temp != null) {
@@ -66,9 +78,67 @@ public class AsyncSendDispatcher implements SendDispatcher {
         sendCurrentPacket();
     }
 
+    /**
+     * 发送当前包
+     */
     private void sendCurrentPacket() {
-        IoArgs ioArgs = this.ioArgs;
+        IoArgs args = this.ioArgs;
+        // 开始清理
+        args.startWriting();
+        if (position >= total) {
+            sendNextPacket();
+            return;
+        } else if (position == 0) {
+            // 刚刚开始发送
+            // 首包，需要携带长度信息
+            args.writeLength(total);
+        }
+
+        byte[] bytes = packetTemp.bytes();
+        int count = args.readFrom(bytes, position);
+        position += count;
+
+        // 完成封装
+        args.finishWriting();
+
+        try {
+            sender.sendAsync(args, ioArgsEventListener);
+        } catch (IOException e) {
+            closeAndNotify();
+        }
     }
+
+    /**
+     * 关闭并通知出去
+     */
+    private void closeAndNotify() {
+        CloseUtils.close(this);
+    }
+
+    /**
+     * Closeable类的关闭方法
+     * @throws IOException
+     */
+    @Override
+    public void close() throws IOException {
+
+    }
+
+    /**
+     * 进度的回调
+     */
+    private final IoArgs.IoArgsEventListener ioArgsEventListener = new IoArgs.IoArgsEventListener() {
+        @Override
+        public void onStarted(IoArgs args) {
+
+        }
+
+        @Override
+        public void onCompleted(IoArgs args) {
+            // 继续发送当前包
+            sendCurrentPacket();
+        }
+    };
 
     @Override
     public void cancel(SendPacket packet) {
