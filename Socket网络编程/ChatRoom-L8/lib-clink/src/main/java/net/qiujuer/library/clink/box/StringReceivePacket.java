@@ -2,6 +2,8 @@ package net.qiujuer.library.clink.box;
 
 import net.qiujuer.library.clink.core.ReceivePacket;
 
+import java.io.IOException;
+
 public class StringReceivePacket extends ReceivePacket {
     private byte[] buffer;
     private int position;
@@ -19,5 +21,10 @@ public class StringReceivePacket extends ReceivePacket {
 
     public String string() {
         return new String(buffer);
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
 }
