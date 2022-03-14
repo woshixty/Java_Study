@@ -3,6 +3,8 @@ package net.qiujuer.library.clink.core;
 import net.qiujuer.library.clink.box.StringReceivePacket;
 import net.qiujuer.library.clink.box.StringSendPacket;
 import net.qiujuer.library.clink.impl.SocketChannelAdapter;
+import net.qiujuer.library.clink.impl.async.AsyncReceiveDispatcher;
+import net.qiujuer.library.clink.impl.async.AsyncSendDispatcher;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -39,7 +41,10 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
         this.receiver = adapter;
         // 开始读取数据
         // readNextMessage();
-
+        sendDispatcher = new AsyncSendDispatcher(sender);
+        receiveDispatcher = new AsyncReceiveDispatcher(receiver, receivePacketCallback);
+        // 启动接收
+        receiveDispatcher.start();
     }
 
     public void send(String msg) {
@@ -61,9 +66,17 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
     }
      */
 
+    /**
+     * 关闭操作
+     * @throws IOException
+     */
     @Override
     public void close() throws IOException {
-
+        receiveDispatcher.close();;
+        sendDispatcher.close();
+        sender.close();
+        receiver.close();
+        channel.close();
     }
 
     @Override
@@ -95,13 +108,10 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
     /**
      * 接收到数据的回调
      */
-    private ReceiveDispatcher.ReceivePacketCallback receivePacketCallback = new ReceiveDispatcher.ReceivePacketCallback() {
-        @Override
-        public void onReceivePacketCompleted(ReceivePacket packet) {
-            if (packet instanceof StringReceivePacket) {
-                String msg = ((StringReceivePacket) packet).string();
-                onReceiveNewMessage(msg);
-            }
+    private ReceiveDispatcher.ReceivePacketCallback receivePacketCallback = packet -> {
+        if (packet instanceof StringReceivePacket) {
+            String msg = ((StringReceivePacket) packet).string();
+            onReceiveNewMessage(msg);
         }
     };
 
