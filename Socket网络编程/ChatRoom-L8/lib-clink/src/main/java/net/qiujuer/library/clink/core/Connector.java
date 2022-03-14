@@ -1,5 +1,7 @@
 package net.qiujuer.library.clink.core;
 
+import net.qiujuer.library.clink.box.StringReceivePacket;
+import net.qiujuer.library.clink.box.StringSendPacket;
 import net.qiujuer.library.clink.impl.SocketChannelAdapter;
 
 import java.io.Closeable;
@@ -19,6 +21,8 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
     // 发送者和接收者
     private Sender sender;
     private Receiver receiver;
+    private SendDispatcher sendDispatcher;
+    private ReceiveDispatcher receiveDispatcher;
 
     /**
      * 建立连接
@@ -34,12 +38,17 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
         this.sender = adapter;
         this.receiver = adapter;
         // 开始读取数据
-        readNextMessage();
+        // readNextMessage();
+
+    }
+
+    public void send(String msg) {
+        SendPacket packet = new StringSendPacket(msg);
+        sendDispatcher.send(packet);
     }
 
     /**
      * 读取下一条信息
-     */
     private void readNextMessage() {
         // 判断接收者不为空
         if (receiver != null) {
@@ -50,6 +59,7 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
             }
         }
     }
+     */
 
     @Override
     public void close() throws IOException {
@@ -64,7 +74,6 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
     /**
      * 用来做监听的，监听IO Args的状态
      * 要将异步接收的数据打印出来
-     */
     private IoArgs.IoArgsEventListener echoReceiveListener = new IoArgs.IoArgsEventListener() {
         // 开始接收数据
         @Override
@@ -81,8 +90,25 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
             readNextMessage();
         }
     };
+    */
 
-    //
+    /**
+     * 接收到数据的回调
+     */
+    private ReceiveDispatcher.ReceivePacketCallback receivePacketCallback = new ReceiveDispatcher.ReceivePacketCallback() {
+        @Override
+        public void onReceivePacketCompleted(ReceivePacket packet) {
+            if (packet instanceof StringReceivePacket) {
+                String msg = ((StringReceivePacket) packet).string();
+                onReceiveNewMessage(msg);
+            }
+        }
+    };
+
+    /**
+     * 当有新数据时回调
+     * @param str
+     */
     protected void onReceiveNewMessage(String str) {
         System.out.println(key.toString() + ":" + str);
     }
