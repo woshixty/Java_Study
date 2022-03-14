@@ -24,10 +24,8 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
     // 将channel的异常回调回去
     private final OnChannelStatusChangedListener listener;
     // 对于当前的发送与接收的回调
-    private IoArgs.IoArgsEventListener receiveIoEventListener;
-    private IoArgs.IoArgsEventListener sendIoEventListener;
-    // 外层传递进来
-    private IoArgs receiveArgsTemp;
+    private IoArgs.IoArgsEventProcessor receiveIoEventProcessor;
+    private IoArgs.IoArgsEventProcessor sendIoEventProcessor;
 
     public SocketChannelAdapter(SocketChannel channel, IoProvider ioProvider,
                                 OnChannelStatusChangedListener listener) throws IOException {
@@ -38,47 +36,31 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
         channel.configureBlocking(false);
     }
 
-    /**
-     * 设置监听回调
-     * @param listener
-     */
     @Override
-    public void setReceiveListener(IoArgs.IoArgsEventListener listener) {
-        receiveIoEventListener = listener;
+    public void setReceiveListener(IoArgs.IoArgsEventProcessor processor) {
+        receiveIoEventProcessor = processor;
     }
 
-    /**
-     * 异步接收
-     * @param args
-     * @return
-     * @throws IOException
-     */
     @Override
-    public boolean receiveAsync(IoArgs args) throws IOException {
+    public boolean postReceiveAsync() throws IOException {
         // 如果当前的channel已经关闭
         if (isClosed.get()) {
             throw new IOException("Current channel is closed!");
         }
-        receiveArgsTemp = args;
         // 返回当前的注册是否成功
         return ioProvider.registerInput(channel, inputCallback);
     }
 
-    /**
-     * 异步发送
-     * @param args  要发送的数据
-     * @param listener  发送的状态回调
-     * @return
-     * @throws IOException
-     */
     @Override
-    public boolean sendAsync(IoArgs args, IoArgs.IoArgsEventListener listener) throws IOException {
+    public void setSendListener(IoArgs.IoArgsEventProcessor processor) {
+        sendIoEventProcessor = processor;
+    }
+
+    @Override
+    public boolean postSendAsync() throws IOException {
         if (isClosed.get()) {
             throw new IOException("Current channel is closed!");
         }
-        sendIoEventListener = listener;
-        // 当前发送的数据附加到回调中
-        outputCallback.setAttach(args);
         return ioProvider.registerOutput(channel, outputCallback);
     }
 
@@ -110,17 +92,15 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
             if (isClosed.get()) {
                 return;
             }
-            // 直接 new IoArgs()
-            IoArgs args = receiveArgsTemp;
-            IoArgs.IoArgsEventListener listener = SocketChannelAdapter.this.receiveIoEventListener;
-            listener.onStarted(args);
+            IoArgs.IoArgsEventProcessor processor = SocketChannelAdapter.this.receiveIoEventProcessor;
+            final IoArgs args = processor.provideIoArgs();
             try {
                 // 具体的读取操作
                 if (args.readFrom(channel) > 0) {
                     // 读取完成回调
-                    listener.onCompleted(args);
+                    processor.onConsumeCompleted(args);
                 } else {
-                    throw new IOException("Cannot readFrom any data!");
+                    processor.onConsumeFailed(args, new IOException("Cannot write any data!"));
                 }
             } catch (IOException ignored) {
                 CloseUtils.close(SocketChannelAdapter.this);
@@ -133,20 +113,20 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
      */
     private final IoProvider.HandleOutputCallback outputCallback = new IoProvider.HandleOutputCallback() {
         @Override
-        protected void canProviderOutput(Object attach) {
+        protected void canProviderOutput() {
+            // 判断是否为为空
             if (isClosed.get()) {
                 return;
             }
-            IoArgs args = getAttach();
-            IoArgs.IoArgsEventListener listener = sendIoEventListener;
-            listener.onStarted(args);
+            IoArgs.IoArgsEventProcessor processor = sendIoEventProcessor;
+            final IoArgs args = processor.provideIoArgs();
             try {
                 // 具体的读取操作
                 if (args.writeTo(channel) > 0) {
                     // 读取完成回调
-                    listener.onCompleted(args);
+                    processor.onConsumeCompleted(args);
                 } else {
-                    throw new IOException("Cannot write any data!");
+                    processor.onConsumeFailed(args, new IOException("Cannot write any data!"));
                 }
             } catch (IOException ignored) {
                 CloseUtils.close(SocketChannelAdapter.this);

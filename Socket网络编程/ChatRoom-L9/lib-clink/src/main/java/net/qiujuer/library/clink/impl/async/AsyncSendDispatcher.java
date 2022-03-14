@@ -75,7 +75,7 @@ public class AsyncSendDispatcher implements SendDispatcher {
             return;
         }
         // 发送数据
-        total = packet.length();
+        total = (int) packet.length();
         position = 0;
         sendCurrentPacket();
     }
@@ -96,7 +96,7 @@ public class AsyncSendDispatcher implements SendDispatcher {
             args.writeLength(total);
         }
 
-        byte[] bytes = packetTemp.bytes();
+        byte[] bytes = packetTemp.open();
         int count = args.readFrom(bytes, position);
         position += count;
 

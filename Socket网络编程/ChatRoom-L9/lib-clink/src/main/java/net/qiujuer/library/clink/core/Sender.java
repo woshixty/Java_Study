@@ -8,11 +8,15 @@ import java.io.IOException;
  */
 public interface Sender extends Closeable {
     /**
+     * 单独set发送者回调
+     * @param processor
+     */
+    void setSendListener(IoArgs.IoArgsEventProcessor processor);
+
+    /**
      * 异步发送数据
-     * @param args  要发送的数据
-     * @param listener  发送的状态回调
      * @return
      * @throws IOException
      */
-    boolean sendAsync(IoArgs args, IoArgs.IoArgsEventListener listener) throws IOException;
+    boolean postSendAsync() throws IOException;
 }
