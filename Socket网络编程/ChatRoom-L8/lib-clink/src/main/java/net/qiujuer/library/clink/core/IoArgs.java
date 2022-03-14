@@ -108,6 +108,10 @@ public class IoArgs {
         return buffer.getInt();
     }
 
+    public int capacity() {
+        return buffer.capacity();
+    }
+
     /**
      * buffer转换为String
      * @return

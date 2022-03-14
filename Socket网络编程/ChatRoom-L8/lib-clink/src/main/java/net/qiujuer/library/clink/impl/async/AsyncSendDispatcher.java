@@ -20,6 +20,8 @@ public class AsyncSendDispatcher implements SendDispatcher {
     private final Queue<SendPacket> queue = new ConcurrentLinkedQueue<>();
     // 处于一个传输过程中
     private final AtomicBoolean isSending = new AtomicBoolean();
+    // 是否已关闭标志
+    private final AtomicBoolean isClosed = new AtomicBoolean(false);
 
     private IoArgs ioArgs = new IoArgs();
     private SendPacket packetTemp;
@@ -121,7 +123,15 @@ public class AsyncSendDispatcher implements SendDispatcher {
      */
     @Override
     public void close() throws IOException {
-
+        if (isClosed.compareAndSet(false, true)) {
+            // 设置为没有发送状态
+            isSending.set(false);
+            SendPacket packet = this.packetTemp;
+            if (packet != null) {
+                packetTemp = null;
+                CloseUtils.close(packet);
+            }
+        }
     }
 
     /**
