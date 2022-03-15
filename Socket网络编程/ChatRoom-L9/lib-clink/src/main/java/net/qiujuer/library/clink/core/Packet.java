@@ -2,15 +2,16 @@ package net.qiujuer.library.clink.core;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 /**
  * 公共数据的封装
  * 提供了类型以及基本的长度的定义
  */
-public abstract class Packet<T extends Closeable> implements Closeable {
+public abstract class Packet<Stream extends Closeable> implements Closeable {
     protected byte type;
     protected long length;
-    private T stream;
+    private Stream stream;
 
     public byte type() {
         return type;
@@ -24,7 +25,7 @@ public abstract class Packet<T extends Closeable> implements Closeable {
      * 打开一个流
      * @return
      */
-    public final T open() {
+    public final Stream open() {
         if (stream == null) {
             stream = createStream();
         }
@@ -47,13 +48,13 @@ public abstract class Packet<T extends Closeable> implements Closeable {
      * 抽象方法：创建流
      * @return
      */
-    protected abstract T createStream();
+    protected abstract Stream createStream();
 
     /**
      * 关闭流
      * @return
      */
-    protected void closeStream(T stream) throws IOException {
+    protected void closeStream(Stream stream) throws IOException {
         stream.close();
     }
 }

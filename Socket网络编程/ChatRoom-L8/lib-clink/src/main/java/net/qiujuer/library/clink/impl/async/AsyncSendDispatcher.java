@@ -47,6 +47,11 @@ public class AsyncSendDispatcher implements SendDispatcher {
         }
     }
 
+    @Override
+    public void cancel(SendPacket packet) {
+
+    }
+
     /**
      * 拿发送包
      * @return
@@ -66,9 +71,9 @@ public class AsyncSendDispatcher implements SendDispatcher {
     private void sendNextPacket() {
         SendPacket temp = packetTemp;
         if (temp != null) {
-            CloseUtils.close(packetTemp);
+            CloseUtils.close(temp);
         }
-        SendPacket packet = takePacket();
+        SendPacket packet = packetTemp = takePacket();
         // 队列为空了，就代表当前没有发送包要发送了
         if (packet == null) {
             isSending.set(false);
@@ -149,9 +154,4 @@ public class AsyncSendDispatcher implements SendDispatcher {
             sendCurrentPacket();
         }
     };
-
-    @Override
-    public void cancel(SendPacket packet) {
-
-    }
 }

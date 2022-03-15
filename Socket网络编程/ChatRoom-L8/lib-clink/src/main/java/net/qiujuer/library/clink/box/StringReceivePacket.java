@@ -13,6 +13,11 @@ public class StringReceivePacket extends ReceivePacket {
         length = len;
     }
 
+    /**
+     * 将bytes中的数据复制到buffer
+     * @param bytes
+     * @param count
+     */
     @Override
     public void save(byte[] bytes, int count) {
         System.arraycopy(bytes, 0, buffer, position, count);

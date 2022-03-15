@@ -113,15 +113,6 @@ public class IoArgs {
     }
 
     /**
-     * buffer转换为String
-     * @return
-    public String bufferString() {
-        // 丢弃换行符
-        return new String(byteBuffer, 0, buffer.position() - 1);
-    }
-    */
-
-    /**
      * 用来做监听的，监听IO Args的状态
      */
     public interface IoArgsEventListener {

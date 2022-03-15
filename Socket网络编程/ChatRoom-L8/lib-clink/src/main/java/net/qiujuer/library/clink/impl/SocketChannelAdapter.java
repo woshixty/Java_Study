@@ -95,7 +95,7 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
             ioProvider.unRegisterOutput(channel);
             // 关闭
             CloseUtils.close(channel);
-            // 回调当前Channel已关闭
+            // Channel关闭的方法回调
             listener.onChannelClosed(channel);
         }
     }
@@ -110,7 +110,6 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
             if (isClosed.get()) {
                 return;
             }
-            // 直接 new IoArgs()
             IoArgs args = receiveArgsTemp;
             IoArgs.IoArgsEventListener listener = SocketChannelAdapter.this.receiveIoEventListener;
             listener.onStarted(args);
@@ -123,6 +122,7 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
                     throw new IOException("Cannot readFrom any data!");
                 }
             } catch (IOException ignored) {
+                ignored.printStackTrace();
                 CloseUtils.close(SocketChannelAdapter.this);
             }
         }

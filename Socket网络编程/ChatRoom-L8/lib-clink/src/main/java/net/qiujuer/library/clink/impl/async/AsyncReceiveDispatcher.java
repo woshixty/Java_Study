@@ -75,6 +75,7 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher {
     private void completePacket() {
         ReceivePacket packet = this.packetTemp;
         CloseUtils.close(packet);
+        packetTemp = null;
         callback.onReceivePacketCompleted(packet);
     }
 
@@ -110,6 +111,7 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher {
      */
     private void assemblePacket(IoArgs args) {
         if (packetTemp == null) {
+            // 读取数据字节长度
             int length = args.readLength();
             packetTemp = new StringReceivePacket(length);
             buffer = new byte[length];
@@ -117,9 +119,11 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher {
             position = 0;
         }
         // 开始读取
+        // 写入数据到buffer中
         int count = args.writeTo(buffer, 0);
         // 有数据写出来
         if (count > 0) {
+            // 将buffer复制到packetTemp的buffer中
             packetTemp.save(buffer, count);
             position += count;
             // 检查是否已完成一份packet接收

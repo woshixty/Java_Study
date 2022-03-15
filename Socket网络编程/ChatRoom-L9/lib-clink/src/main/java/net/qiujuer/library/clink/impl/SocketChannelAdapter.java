@@ -93,7 +93,7 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
                 return;
             }
             IoArgs.IoArgsEventProcessor processor = SocketChannelAdapter.this.receiveIoEventProcessor;
-            final IoArgs args = processor.provideIoArgs();
+            IoArgs args = processor.provideIoArgs();
             try {
                 // 具体的读取操作
                 if (args.readFrom(channel) > 0) {
@@ -119,7 +119,7 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
                 return;
             }
             IoArgs.IoArgsEventProcessor processor = sendIoEventProcessor;
-            final IoArgs args = processor.provideIoArgs();
+            IoArgs args = processor.provideIoArgs();
             try {
                 // 具体的读取操作
                 if (args.writeTo(channel) > 0) {

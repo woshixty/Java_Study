@@ -13,7 +13,7 @@ public class FileSendPacket extends SendPacket<FileInputStream> {
     }
 
     @Override
-    protected Closeable createStream() {
+    protected FileInputStream createStream() {
         return null;
     }
 }

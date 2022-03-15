@@ -53,20 +53,6 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
     }
 
     /**
-     * 读取下一条信息
-    private void readNextMessage() {
-        // 判断接收者不为空
-        if (receiver != null) {
-            try {
-                receiver.receiveAsync(echoReceiveListener);
-            } catch (IOException e) {
-                System.out.println("开始接收数据异常：" + e.getMessage());
-            }
-        }
-    }
-     */
-
-    /**
      * 关闭操作
      * @throws IOException
      */

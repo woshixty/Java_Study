@@ -13,14 +13,10 @@ import java.nio.channels.WritableByteChannel;
  */
 public class IoArgs {
     private int limit = 256;
-    /**
-    // 主要完成对ByteBuffer的封装
-    private byte[] byteBuffer = new byte[256];
-     */
     private ByteBuffer buffer = ByteBuffer.allocate(limit);
 
     /**
-     * 将channel中的数据转移到buffer中
+     * 将ReadableByteChannel中的数据转移到buffer中
      * @param channel
      * @return
      */
@@ -38,7 +34,7 @@ public class IoArgs {
     }
 
     /**
-     * 写入数据到bytes中
+     * 将WritableByteChannel数据写入到bytes中
      * @param channel
      * @return
      */
@@ -113,6 +109,10 @@ public class IoArgs {
         return bytesProduced;
     }
 
+    /**
+     * 写入数据部分长度
+     * @param total
+     */
     public void writeLength(int total) {
         startWriting();
         buffer.putInt(total);
@@ -131,6 +131,10 @@ public class IoArgs {
      *  IoArgs提供者、处理者；数据的生产或消费者
      */
     public interface IoArgsEventProcessor {
+        /**
+         * 提供一个IoArgs
+         * @return
+         */
         IoArgs provideIoArgs();
 
         /**
