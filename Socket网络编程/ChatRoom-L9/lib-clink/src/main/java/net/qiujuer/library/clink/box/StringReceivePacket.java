@@ -6,7 +6,6 @@ import java.io.ByteArrayOutputStream;
  * 字符串接收包
  */
 public class StringReceivePacket extends AbsByteArrayReceivePacket<String> {
-
     public StringReceivePacket(long len) {
         super(len);
     }

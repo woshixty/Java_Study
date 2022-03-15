@@ -13,7 +13,7 @@ import java.nio.channels.WritableByteChannel;
  */
 public class IoArgs {
     private int limit = 256;
-    private ByteBuffer buffer = ByteBuffer.allocate(limit);
+    private ByteBuffer buffer = ByteBuffer.allocate(256);
 
     /**
      * 将ReadableByteChannel中的数据转移到buffer中

@@ -12,7 +12,9 @@ import java.net.Inet4Address;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 
-// TCP连接代理类
+/**
+ * TCP连接代理类
+ */
 public class TCPClient extends Connector {
     private final File cachePath;
 
@@ -21,7 +23,9 @@ public class TCPClient extends Connector {
         setup(socketChannel);
     }
 
-    // 退出连接
+    /**
+     * 退出连接
+     */
     public void exit() {
         CloseUtils.close(this);
     }
@@ -36,11 +40,19 @@ public class TCPClient extends Connector {
         System.out.println("连接已关闭，无法读取数据");
     }
 
+    /**
+     * 创建一个新的文件
+     * @return
+     */
     @Override
     protected File createNewReceiveFile() {
         return Foo.createRandomTemp(cachePath);
     }
 
+    /**
+     * 收到ReceivePacket
+     * @param packet
+     */
     @Override
     protected void onReceivePacket(ReceivePacket packet) {
         super.onReceivePacket(packet);
@@ -50,7 +62,13 @@ public class TCPClient extends Connector {
         }
     }
 
-    // 连接服务器并返回代理
+    /**
+     * 连接服务器并返回代理
+     * @param info
+     * @param cachePath
+     * @return
+     * @throws IOException
+     */
     public static TCPClient startWith(ServerInfo info, File cachePath) throws IOException {
         SocketChannel socketChannel = SocketChannel.open();
         // 连接本地，端口2000

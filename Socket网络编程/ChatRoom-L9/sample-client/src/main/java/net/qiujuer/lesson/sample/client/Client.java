@@ -66,9 +66,10 @@ public class Client {
                         tcpClient.send(packet);
                     }
                 }
+            } else {
+                // 发送字符串到服务器
+                tcpClient.send(str);
             }
-            // 发送字符串到服务器
-            tcpClient.send(str);
         } while (true);
     }
 

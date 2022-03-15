@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class Foo {
+    public static void main(String[] args) {
+        System.out.println(System.getProperty("user.dir"));
+    }
+
     // 默认缓存目录
     private static final String CACHE_DIR = "cache";
 
