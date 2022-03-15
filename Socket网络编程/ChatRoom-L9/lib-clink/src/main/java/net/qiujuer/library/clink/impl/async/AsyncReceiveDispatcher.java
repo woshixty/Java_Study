@@ -1,10 +1,7 @@
 package net.qiujuer.library.clink.impl.async;
 
 import net.qiujuer.library.clink.box.StringReceivePacket;
-import net.qiujuer.library.clink.core.IoArgs;
-import net.qiujuer.library.clink.core.ReceiveDispatcher;
-import net.qiujuer.library.clink.core.ReceivePacket;
-import net.qiujuer.library.clink.core.Receiver;
+import net.qiujuer.library.clink.core.*;
 import net.qiujuer.library.clink.utils.CloseUtils;
 
 import java.io.IOException;
@@ -12,6 +9,9 @@ import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * 异步接收数据
+ */
 public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsEventProcessor {
     // 是否已关闭标志
     private final AtomicBoolean isClosed = new AtomicBoolean(false);
@@ -20,7 +20,7 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsE
     // 接收回调定义
     private final ReceivePacketCallback callback;
     private IoArgs ioArgs = new IoArgs();
-    private ReceivePacket<?> packetTemp;
+    private ReceivePacket<?, ?> packetTemp;
     private WritableByteChannel packetChannel;
     private long total;
     private long position;
@@ -48,17 +48,41 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsE
     public void close() throws IOException {
         if (isClosed.compareAndSet(false, true)) {
             completePacket(false);
-            // 不需要
-//            ReceivePacket packet = this.packetTemp;
-//            if (packet != null) {
-//                packetTemp = null;
-//                CloseUtils.close(packet);
-//            }
         }
     }
 
     private void closeAndNotify() {
         CloseUtils.close(this);
+    }
+
+    /**
+     * 解析数据到packet
+     * @param args
+     */
+    private void assemblePacket(IoArgs args) {
+        if (packetTemp == null) {
+            int length = args.readLength();
+            byte type = length > 200 ? Packet.TYPE_STREAM_FILE : Packet.TYPE_MEMORY_STRING;
+            // 获取相应类型的接收包
+            packetTemp = callback.onArrivedNewPacket(type, length);
+            packetChannel = Channels.newChannel(packetTemp.open());
+
+            total = length;
+            position = 0;
+        }
+        try {
+            // 数据写失败了直接报异常
+            int count = args.writeTo(packetChannel);
+            position += count;
+            // 检查是否已完成一份packet接收
+            if (position == total) {
+                completePacket(true);
+                packetTemp = null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            completePacket(false);
+        }
     }
 
     /**
@@ -86,33 +110,6 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsE
             receiver.postReceiveAsync();
         } catch (IOException e) {
             closeAndNotify();
-        }
-    }
-
-    /**
-     * 解析数据到packet
-     * @param args
-     */
-    private void assemblePacket(IoArgs args) {
-        if (packetTemp == null) {
-            int length = args.readLength();
-            packetTemp = new StringReceivePacket(length);
-            packetChannel = Channels.newChannel(packetTemp.open());
-            total = length;
-            position = 0;
-        }
-        try {
-            // 数据写失败了直接报异常
-            int count = args.writeTo(packetChannel);
-            position += count;
-            // 检查是否已完成一份packet接收
-            if (position == total) {
-                completePacket(true);
-                packetTemp = null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            completePacket(false);
         }
     }
 

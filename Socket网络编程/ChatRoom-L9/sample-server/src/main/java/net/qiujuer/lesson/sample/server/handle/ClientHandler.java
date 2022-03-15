@@ -3,11 +3,12 @@ package net.qiujuer.lesson.sample.server.handle;
 import net.qiujuer.library.clink.core.Connector;
 import net.qiujuer.library.clink.utils.CloseUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 /**
- * 客户端处理
+ * 客户端处理类
  */
 public class ClientHandler extends Connector {
     private final ClientHandlerCallback clientHandlerCallback;
@@ -20,6 +21,9 @@ public class ClientHandler extends Connector {
         setup(socketChannel);
     }
 
+    /**
+     * 客户端退出连接
+     */
     public void exit() {
         CloseUtils.close(this);
         System.out.println("客户端已退出：" + clientInfo);
@@ -35,19 +39,17 @@ public class ClientHandler extends Connector {
         exitBySelf();
     }
 
-    private void exitBySelf() {
-        exit();
-        clientHandlerCallback.onSelfClosed(this);
+    @Override
+    protected File createNewReceiveFile() {
+        return null;
     }
 
     /**
-     * 收到新消息时的回调
-     * @param str
+     * 自我关闭
      */
-    @Override
-    protected void onReceiveNewMessage(String str) {
-        super.onReceiveNewMessage(str);
-        clientHandlerCallback.onNewMessageArrived(this, str);
+    private void exitBySelf() {
+        exit();
+        clientHandlerCallback.onSelfClosed(this);
     }
 
     /**

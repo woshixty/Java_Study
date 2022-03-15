@@ -32,7 +32,10 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
         this.forwardingThreadPoolExecutor = Executors.newSingleThreadExecutor();
     }
 
-    // 开启一个TCP服务器
+    /**
+     * 开启一个TCP服务器
+     * @return
+     */
     public boolean start() {
         try {
             // 打开一个多路复用器
@@ -58,7 +61,9 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
         return true;
     }
 
-    // 关闭TCP服务器
+    /**
+     * 关闭TCP服务器
+     */
     public void stop() {
         if (listener != null) {
             listener.exit();
@@ -77,18 +82,30 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
         forwardingThreadPoolExecutor.shutdownNow();
     }
 
-    // 广播消息
+    /**
+     * 广播消息
+     * @param str
+     */
     public synchronized void broadcast(String str) {
         for (ClientHandler clientHandler : clientHandlerList) {
             clientHandler.send(str);
         }
     }
 
+    /**
+     * 客户端关闭的时候
+     * @param handler
+     */
     @Override
     public synchronized void onSelfClosed(ClientHandler handler) {
         clientHandlerList.remove(handler);
     }
 
+    /**
+     * 新消息到达的时候
+     * @param handler
+     * @param msg
+     */
     @Override
     public void onNewMessageArrived(final ClientHandler handler, final String msg) {
         // 异步提交转发任务
@@ -106,7 +123,9 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
         });
     }
 
-    // 客户端监听线程
+    /**
+     * 客户端监听线程
+     */
     private class ClientListener extends Thread {
         private boolean done = false;
 

@@ -1,5 +1,7 @@
 package net.qiujuer.library.clink.core;
 
+import net.qiujuer.library.clink.box.BytesReceivePacket;
+import net.qiujuer.library.clink.box.FileReceivePacket;
 import net.qiujuer.library.clink.box.StringReceivePacket;
 import net.qiujuer.library.clink.box.StringSendPacket;
 import net.qiujuer.library.clink.impl.SocketChannelAdapter;
@@ -7,6 +9,7 @@ import net.qiujuer.library.clink.impl.async.AsyncReceiveDispatcher;
 import net.qiujuer.library.clink.impl.async.AsyncSendDispatcher;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.UUID;
@@ -15,9 +18,9 @@ import java.util.UUID;
  * 连接
  * 当关闭的时候的回调：SocketChannelAdapter.OnChannelStatusChangedListener
  */
-public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatusChangedListener {
+public abstract class Connector implements Closeable, SocketChannelAdapter.OnChannelStatusChangedListener {
     // 代表这个连接的唯一性
-    private UUID key = UUID.randomUUID();
+    protected UUID key = UUID.randomUUID();
     // 依赖于SocketChannel
     private SocketChannel channel;
     // 发送者和接收者
@@ -47,24 +50,22 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
         receiveDispatcher.start();
     }
 
+    /**
+     * 发送字符串
+     * @param msg
+     */
     public void send(String msg) {
         SendPacket packet = new StringSendPacket(msg);
         sendDispatcher.send(packet);
     }
 
     /**
-     * 读取下一条信息
-    private void readNextMessage() {
-        // 判断接收者不为空
-        if (receiver != null) {
-            try {
-                receiver.receiveAsync(echoReceiveListener);
-            } catch (IOException e) {
-                System.out.println("开始接收数据异常：" + e.getMessage());
-            }
-        }
-    }
+     * 发送文件
+     * @param packet
      */
+    public void send(SendPacket packet) {
+        sendDispatcher.send(packet);
+    }
 
     /**
      * 关闭操作
@@ -79,47 +80,51 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
         channel.close();
     }
 
+    /**
+     * 当SocketChannel关闭时
+     * @param channel
+     */
     @Override
     public void onChannelClosed(SocketChannel channel) {
 
     }
 
     /**
-     * 用来做监听的，监听IO Args的状态
-     * 要将异步接收的数据打印出来
-    private IoArgs.IoArgsEventListener echoReceiveListener = new IoArgs.IoArgsEventListener() {
-        // 开始接收数据
-        @Override
-        public void onStarted(IoArgs args) {
-            System.out.println();
-        }
+     * 当有新数据包时回调
+     * @param packet
+     */
+    protected void onReceivePacket(ReceivePacket packet) {
+        System.out.println(key.toString() + ": [NEW Packet] Type:" + packet.type() + ", Length:" + packet.length);
+    }
 
-        // 结束接收数据
-        @Override
-        public void onCompleted(IoArgs args) {
-            // 打印
-            onReceiveNewMessage(args.bufferString());
-            // 读取下一条数据
-            readNextMessage();
-        }
-    };
-    */
+    /**
+     * 创建一个临时的文件
+     * @return
+     */
+    protected abstract File createNewReceiveFile();
 
     /**
      * 接收到数据的回调
      */
-    private ReceiveDispatcher.ReceivePacketCallback receivePacketCallback = packet -> {
-        if (packet instanceof StringReceivePacket) {
-            String msg = ((StringReceivePacket) packet).string();
-            onReceiveNewMessage(msg);
+    private ReceiveDispatcher.ReceivePacketCallback receivePacketCallback = new ReceiveDispatcher.ReceivePacketCallback() {
+        @Override
+        public ReceivePacket<?, ?> onArrivedNewPacket(byte type, long length) {
+            switch (type) {
+                case Packet.TYPE_MEMORY_BYTES:
+                case Packet.TYPE_STREAM_DIRECT:
+                    return new BytesReceivePacket(length);
+                case Packet.TYPE_MEMORY_STRING:
+                    return new StringReceivePacket(length);
+                case Packet.TYPE_STREAM_FILE:
+                    return new FileReceivePacket(length, createNewReceiveFile());
+                default:
+                    throw new UnsupportedOperationException("Unsupported packet type:" + type);
+            }
+        }
+
+        @Override
+        public void onReceivePacketCompleted(ReceivePacket packet) {
+            onReceivePacket(packet);
         }
     };
-
-    /**
-     * 当有新数据时回调
-     * @param str
-     */
-    protected void onReceiveNewMessage(String str) {
-        System.out.println(key.toString() + ":" + str);
-    }
 }

@@ -1,5 +1,7 @@
 package net.qiujuer.library.clink.core;
 
+import com.sun.corba.se.spi.copyobject.ReflectiveCopyException;
+
 import java.io.Closeable;
 
 /**
@@ -12,6 +14,18 @@ public interface ReceiveDispatcher extends Closeable {
     void stop();
 
     interface ReceivePacketCallback {
+        /**
+         * 当新到达一个Packet时
+         * @param type
+         * @param length
+         * @return
+         */
+        ReceivePacket<?, ?> onArrivedNewPacket(byte type, long length);
+
+        /**
+         * 接收包完成时
+         * @param packet
+         */
         void onReceivePacketCompleted(ReceivePacket packet);
     }
 }
