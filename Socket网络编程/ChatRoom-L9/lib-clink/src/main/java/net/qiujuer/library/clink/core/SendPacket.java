@@ -9,7 +9,7 @@ public abstract class SendPacket<T extends InputStream> extends Packet<T> {
     private boolean isCanceled;
 
     /**
-     * 是否已取消发送
+     * 设置取消发送标志
      * @return
      */
     public boolean isCanceled() {

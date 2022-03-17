@@ -16,12 +16,38 @@ public class IoArgs {
     private ByteBuffer buffer = ByteBuffer.allocate(256);
 
     /**
+     * 从bytes数组进行消费
+     * @param bytes
+     * @param offset
+     * @param count
+     * @return
+     */
+    public int readFrom(byte[] bytes, int offset, int count) {
+        int size = Math.min(count, buffer.remaining());
+        if (size < 0)
+            return 0;
+        buffer.put(bytes, offset, size);
+        return size;
+    }
+
+    /**
+     * 写数据到bytes中去
+     * @param bytes
+     * @param offset
+     * @return
+     */
+    public int writeTo(byte[] bytes, int offset) {
+        int size = Math.min(bytes.length - offset, buffer.remaining());
+        buffer.get(bytes, offset, size);
+        return size;
+    }
+
+    /**
      * 将ReadableByteChannel中的数据转移到buffer中
      * @param channel
      * @return
      */
     public int readFrom(ReadableByteChannel channel) throws IOException {
-        startWriting();
         int bytesProduced = 0;
         while (buffer.hasRemaining()) {
             int len = channel.read(buffer);
@@ -29,7 +55,6 @@ public class IoArgs {
                 throw new EOFException();
             bytesProduced += len;
         }
-        finishWriting();
         return bytesProduced;
     }
 
@@ -89,7 +114,7 @@ public class IoArgs {
      * @param limit
      */
     public void limit(int limit) {
-        this.limit = limit;
+        this.limit = Math.min(limit, buffer.capacity());
     }
 
     /**
@@ -109,22 +134,32 @@ public class IoArgs {
         return bytesProduced;
     }
 
-    /**
-     * 写入数据部分长度
-     * @param total
-     */
-    public void writeLength(int total) {
-        startWriting();
-        buffer.putInt(total);
-        finishWriting();
-    }
-
     public int readLength() {
         return buffer.getInt();
     }
 
     public int capacity() {
         return buffer.capacity();
+    }
+
+    /**
+     * 返回当前buffer的可存取区间
+     * @return
+     */
+    public boolean remained() {
+        return buffer.remaining() > 0;
+    }
+
+    /**
+     * 填充假数据
+     * @param size
+     * @return
+     */
+    public int fillEmpty(int size) {
+        // 本次可以消费的最大区间
+        int fillSize = Math.min(size, buffer.remaining());
+        buffer.position(buffer.position() + fillSize);
+        return 0;
     }
 
     /**

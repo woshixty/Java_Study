@@ -15,7 +15,6 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
     // 客户端监听
     private ClientListener mListener;
     // 不能保证插入删除时候遍历正常
-    // private List<ClientHandler> clientHandlerList = Collections.synchronizedList(new ArrayList<>());
     private List<ClientHandler> clientHandlerList = new ArrayList<>();
     // 单线程池-转发线程池
     private final ExecutorService forwardingThreadPoolExecutor;
