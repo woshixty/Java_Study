@@ -10,7 +10,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
 /**
- * 发送的Packet头帧
+ * 发送的Packet头帧，第一个帧
  */
 public class SendHeaderFrame extends AbsSendPacketFrame {
     // 包头帧最小长度

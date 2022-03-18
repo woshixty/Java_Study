@@ -2,6 +2,10 @@ package net.qiujuer.library.clink.frames;
 
 import net.qiujuer.library.clink.core.IoArgs;
 
+/**
+ * 接收头帧
+ * 也就是body的头部
+ */
 public class ReceiveHeaderFrame extends AbsReceiveFrame {
     private final byte[] body;
 

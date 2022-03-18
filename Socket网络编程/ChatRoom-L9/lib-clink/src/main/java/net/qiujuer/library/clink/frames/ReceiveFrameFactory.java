@@ -14,8 +14,11 @@ public class ReceiveFrameFactory {
      * @return 构建的帧头数据
      */
     public static AbsReceiveFrame createInstance(IoArgs args) {
+        // 前面六个字节拿出来
         byte[] buffer = new byte[Frame.FRAME_HEADER_LENGTH];
+        // 将args中的数据写到buffer中去
         args.writeTo(buffer, 0);
+        // 拿到Type值
         byte type = buffer[2];
         switch (type) {
             case Frame.TYPE_COMMAND_SEND_CANCEL:

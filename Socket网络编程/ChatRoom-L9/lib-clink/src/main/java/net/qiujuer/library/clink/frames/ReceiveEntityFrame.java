@@ -5,6 +5,9 @@ import net.qiujuer.library.clink.core.IoArgs;
 import java.io.IOException;
 import java.nio.channels.WritableByteChannel;
 
+/**
+ * 接收实体帧
+ */
 public class ReceiveEntityFrame extends AbsReceiveFrame {
     private WritableByteChannel channel;
 

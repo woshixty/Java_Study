@@ -5,7 +5,7 @@ import net.qiujuer.library.clink.core.IoArgs;
 import java.io.IOException;
 
 /**
- * 取消传输帧，接收实现
+ * 取消传输帧，接收实现，数据全都在帧头里面
  */
 public class CancelReceiveFrame extends AbsReceiveFrame {
 
@@ -14,7 +14,7 @@ public class CancelReceiveFrame extends AbsReceiveFrame {
     }
 
     @Override
-    protected int consumeBody(IoArgs args) throws IOException {
+    protected int consumeBody(IoArgs args) {
         return 0;
     }
 }
