@@ -23,55 +23,16 @@ public class AsyncPacketReader implements Closeable {
     // 表示当前队列长度
     private volatile int nodeSize = 0;
     // 每一个packet都有一个唯一标识
-    private short lastIdentify = 0;
+    private short lastIdentifier = 0;
 
     public AsyncPacketReader(PacketProvider provider) {
         this.provider = provider;
     }
 
     /**
-     * 取消发送数据
+     * 请求从 {@link #provider}队列中拿一份Packet进行发送
      *
-     * @param packet
-     */
-    public synchronized void cancel(SendPacket packet) {
-        // 如果当前的队列完全是一个空的东西
-        if (nodeSize == 0) {
-            return;
-        }
-        for (BytePriorityNode<Frame> x = node, before = null; x != null; before = x, x = x.next) {
-            Frame frame = x.item;
-            if (frame instanceof AbsSendPacketFrame) {
-                // 是一个发送Packet的帧
-                AbsSendPacketFrame packetFrame = (AbsSendPacketFrame) frame;
-                // 我们想要取消的packet
-                if (packetFrame.getPacket() == packet) {
-                    // 终止操作
-                    boolean removable = packetFrame.abort();
-                    if (removable) {
-                        // 完美终止
-                        // A B C
-                        removeFrame(x, before);
-                        if (packetFrame instanceof SendHeaderFrame) {
-                            // 头帧，并且未被发送任何数据，直接取消后不需要添加取消发送帧
-                            break;
-                        }
-                    }
-                    // 放入到唯一标识，添加终止帧，通知接收方
-                    CancelSendFrame cancelSendFrame = new CancelSendFrame(packetFrame.getBodyIdentifier());
-                    appendNewFrame(cancelSendFrame);
-                    // 意外返回，返回失败
-                    provider.completedPacket(packet, false);
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * 接口回调方式请求拿一个Packet
-     *
-     * @return
+     * @return 如果当前Reader中有可以用于网络发送的数据，则返回True
      */
     public synchronized boolean requestTakePacket() {
         synchronized (this) {
@@ -115,11 +76,11 @@ public class AsyncPacketReader implements Closeable {
                     // 是实体帧且没有下一帧
                     // 通知完成
                     provider.completedPacket(((SendEntityFrame) currentFrame).getPacket(), true);
-                    // 从链头弹出
-                    popCurrentFrame();
                 }
-                return args;
+                // 从链头弹出
+                popCurrentFrame();
             }
+            return args;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -127,9 +88,47 @@ public class AsyncPacketReader implements Closeable {
     }
 
     /**
-     * 关闭操作
+     * 取消Packet对应的帧发送，如果当前Packet已发送部分数据（就算只是头数据）
+     * 也应该在当前帧队列中发送一份取消发送的标志{@link CancelSendFrame}
      *
-     * @throws IOException
+     * @param packet 待取消的packet
+     */
+    public synchronized void cancel(SendPacket packet) {
+        // 如果当前的队列完全是一个空的东西
+        if (nodeSize == 0) {
+            return;
+        }
+        for (BytePriorityNode<Frame> x = node, before = null; x != null; before = x, x = x.next) {
+            Frame frame = x.item;
+            if (frame instanceof AbsSendPacketFrame) {
+                // 是一个发送Packet的帧
+                AbsSendPacketFrame packetFrame = (AbsSendPacketFrame) frame;
+                // 我们想要取消的packet
+                if (packetFrame.getPacket() == packet) {
+                    // 终止操作
+                    boolean removable = packetFrame.abort();
+                    if (removable) {
+                        // 完美终止
+                        // A B C
+                        removeFrame(x, before);
+                        if (packetFrame instanceof SendHeaderFrame) {
+                            // 头帧，并且未被发送任何数据，直接取消后不需要添加取消发送帧
+                            break;
+                        }
+                    }
+                    // 放入到唯一标识，添加终止帧，通知接收方
+                    CancelSendFrame cancelSendFrame = new CancelSendFrame(packetFrame.getBodyIdentifier());
+                    appendNewFrame(cancelSendFrame);
+                    // 意外返回，返回失败
+                    provider.completedPacket(packet, false);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 关闭当前Reader，关闭时应关闭所有的Frame对应的Packet
      */
     @Override
     public synchronized void close() {
@@ -146,20 +145,7 @@ public class AsyncPacketReader implements Closeable {
     }
 
     /**
-     * 生成唯一标识
-     *
-     * @return
-     */
-    private short generateIdentifier() {
-        short identifier = ++lastIdentify;
-        if (identifier == 255) {
-            lastIdentify = 0;
-        }
-        return identifier;
-    }
-
-    /**
-     * 将帧添加到队列
+     * 添加新的帧
      *
      * @param frame
      */
@@ -176,7 +162,7 @@ public class AsyncPacketReader implements Closeable {
     }
 
     /**
-     * 获取当前帧
+     * 获取当前链表头的帧
      *
      * @return
      */
@@ -187,7 +173,7 @@ public class AsyncPacketReader implements Closeable {
     }
 
     /**
-     * 弹出当前帧
+     * 弹出链表头的帧
      */
     private void popCurrentFrame() {
         node = node.next;
@@ -199,10 +185,10 @@ public class AsyncPacketReader implements Closeable {
     }
 
     /**
-     * 移除当前帧
+     * 删除某帧对应的链表节点
      *
-     * @param removeNode
-     * @param before
+     * @param removeNode 待删除的节点
+     * @param before     当前删除节点的前一个节点，用于构建新的链表结构
      */
     private synchronized void removeFrame(BytePriorityNode<Frame> removeNode, BytePriorityNode<Frame> before) {
         if (before == null) {
@@ -214,6 +200,19 @@ public class AsyncPacketReader implements Closeable {
         if (node == null) {
             requestTakePacket();
         }
+    }
+
+    /**
+     * 生成唯一标识
+     *
+     * @return
+     */
+    private short generateIdentifier() {
+        short identifier = ++lastIdentifier;
+        if (identifier == 255) {
+            lastIdentifier = 0;
+        }
+        return identifier;
     }
 
     /**

@@ -93,7 +93,7 @@ public abstract class Connector implements Closeable, SocketChannelAdapter.OnCha
      * 当有新数据包时回调
      * @param packet
      */
-    protected void onReceivePacket(ReceivePacket packet) {
+    protected void onReceivedPacket(ReceivePacket packet) {
         System.out.println(key.toString() + ": [NEW Packet] Type:" + packet.type() + ", Length:" + packet.length);
     }
 
@@ -124,7 +124,7 @@ public abstract class Connector implements Closeable, SocketChannelAdapter.OnCha
 
         @Override
         public void onReceivePacketCompleted(ReceivePacket packet) {
-            onReceivePacket(packet);
+            onReceivedPacket(packet);
         }
     };
 }

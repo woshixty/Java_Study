@@ -29,31 +29,40 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsE
     }
 
     /**
-     * 开始接收操作
+     * 开始进入接收方法
      */
     @Override
     public void start() {
         registerReceive();
     }
 
+    /**
+     * 停止接收数据
+     */
     @Override
     public void stop() {
 
     }
 
+    /**
+     * 关闭操作，关闭相关流
+     */
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (isClosed.compareAndSet(false, true)) {
             writer.close();
         }
     }
 
+    /**
+     * 自主发起的关闭操作，并且需要进行通知
+     */
     private void closeAndNotify() {
         CloseUtils.close(this);
     }
 
     /**
-     * 注册接收操作
+     * 注册接收数据
      */
     private void registerReceive() {
         try {
@@ -100,6 +109,11 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsE
 
     /**
      * 构建Packet操作，根据类型、长度构建一份用于接收数据的Packet
+     *
+     * @param type       Packet类型
+     * @param length     Packet长度
+     * @param headerInfo Packet headerInfo
+     * @return
      */
     @Override
     public ReceivePacket takePacket(byte type, long length, byte[] headerInfo) {

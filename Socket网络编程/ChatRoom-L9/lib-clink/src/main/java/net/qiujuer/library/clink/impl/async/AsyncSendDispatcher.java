@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- *  异步发送的实现类
+ *  发送调度
  */
 public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventProcessor, AsyncPacketReader.PacketProvider {
     private final Sender sender;
@@ -31,17 +31,20 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
     }
 
     /**
-     * 发送包
-     * @param packet
+     * 发送Packet
+     * 首先添加到队列，如果当前状态为未启动发送状态
+     * 则，尝试让reader提取一份packet进行数据发送
+     * <p>
+     * 如果提取数据后reader有数据，则进行异步输出注册
+     *
+     * @param packet 数据
      */
     @Override
     public void send(SendPacket packet) {
         synchronized (queueLock) {
             queue.offer(packet);
-            // 当前不是发送状态
             if (isSending.compareAndSet(false, true)) {
                 if (reader.requestTakePacket()) {
-                    // 请求发送
                     requestSend();
                 }
             }
@@ -49,17 +52,20 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
     }
 
     /**
-     * 取消发送
-     * @param packet
+     * 取消Packet操作
+     * 如果还在队列中，代表Packet未进行发送，则直接标志取消，并返回即可
+     * 如果未在队列中，则让reader尝试扫描当前发送序列，查询是否当前Packet正在发送
+     * 如果是则进行取消相关操作
+     *
+     * @param packet 数据
      */
     @Override
     public void cancel(SendPacket packet) {
-        // 从队列中移除
         boolean ret;
         synchronized (queueLock) {
             ret = queue.remove(packet);
         }
-        if (ret == true) {
+        if (ret) {
             packet.cancel();
             return;
         }
@@ -67,8 +73,9 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
     }
 
     /**
-     * 拿发送包
-     * @return
+     * reader从当前队列中提取一份Packet
+     *
+     * @return 如果队列有可用于发送的数据则返回该Packet
      */
     @Override
     public SendPacket takePacket() {
@@ -76,6 +83,7 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
         synchronized (queueLock) {
             packet = queue.poll();
             if (packet == null) {
+                // 队列为空，取消发送状态
                 isSending.set(false);
                 return null;
             }
@@ -88,7 +96,7 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
     }
 
     /**
-     * 完成packet包发送
+     * 完成Packet发送
      * @param packet    发送包
      * @param isSucceed 是否成功发送完成
      */
@@ -131,8 +139,10 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
     }
 
     /**
-     * 提供IoArgs
-     * @return
+     * 网络发送就绪回调，当前已进入发送就绪状态，等待填充数据进行发送
+     * 此时从reader中填充数据，并进行后续网络发送
+     *
+     * @return NULL，可能填充异常，或者想要取消本次发送
      */
     @Override
     public IoArgs provideIoArgs() {
@@ -140,22 +150,25 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
     }
 
     /**
-     * 消费数据失败
-     * @param args
-     * @param e
+     * 网络发送IoArgs出现异常
+     *
+     * @param args IoArgs
+     * @param e    异常信息
      */
     @Override
     public void onConsumeFailed(IoArgs args, Exception e) {
         if (args != null) {
             e.printStackTrace();
         } else {
-            // TODO: 2022/3/17
+            // TODO
         }
     }
 
     /**
-     * 消费完全
-     * @param args
+     * 网络发送IoArgs完成回调
+     * 在该方法进行reader对当前队列的Packet提取，并进行后续的数据发送注册
+     *
+     * @param args IoArgs
      */
     @Override
     public void onConsumeCompleted(IoArgs args) {

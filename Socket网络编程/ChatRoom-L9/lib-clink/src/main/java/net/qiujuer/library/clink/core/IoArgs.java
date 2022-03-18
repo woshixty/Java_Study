@@ -127,8 +127,9 @@ public class IoArgs {
         int bytesProduced = 0;
         while (buffer.hasRemaining()) {
             int len = channel.write(buffer);
-            if (len < 0)
+            if (len < 0) {
                 throw new EOFException();
+            }
             bytesProduced += len;
         }
         return bytesProduced;

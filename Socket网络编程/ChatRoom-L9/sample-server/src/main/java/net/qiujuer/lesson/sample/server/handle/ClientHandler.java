@@ -58,8 +58,8 @@ public class ClientHandler extends Connector {
      * @param packet
      */
     @Override
-    protected void onReceivePacket(ReceivePacket packet) {
-        super.onReceivePacket(packet);
+    protected void onReceivedPacket(ReceivePacket packet) {
+        super.onReceivedPacket(packet);
         if (packet.type() == Packet.TYPE_MEMORY_STRING) {
             String string = (java.lang.String) packet.entity();
             System.out.println(key.toString() + ":" + string);
