@@ -1,9 +1,6 @@
 package net.qiujuer.library.clink.impl.async;
 
-import net.qiujuer.library.clink.core.IoArgs;
-import net.qiujuer.library.clink.core.SendDispatcher;
-import net.qiujuer.library.clink.core.SendPacket;
-import net.qiujuer.library.clink.core.Sender;
+import net.qiujuer.library.clink.core.*;
 import net.qiujuer.library.clink.utils.CloseUtils;
 
 import java.io.IOException;
@@ -16,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  *  异步发送的实现类
  */
-public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventProcessor {
+public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventProcessor, AsyncPacketReader.PacketProvider {
     private final Sender sender;
     // 线程安全的集合框架
     private final Queue<SendPacket> queue = new ConcurrentLinkedQueue<>();
@@ -24,13 +21,9 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
     private final AtomicBoolean isSending = new AtomicBoolean();
     // 是否已关闭标志
     private final AtomicBoolean isClosed = new AtomicBoolean(false);
-    // IO输入和输出的参数类
-    private IoArgs ioArgs = new IoArgs();
-    private SendPacket<?> packetTemp;
-    // 当前发送packet的大小与进度
-    private ReadableByteChannel packetChannel;
-    private long total;
-    private long position;
+    private final AsyncPacketReader reader = new AsyncPacketReader(this);
+    // 同步关键字
+    private final Object queueLock = new Object();
 
     public AsyncSendDispatcher(Sender sender) {
         this.sender = sender;
@@ -43,20 +36,51 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
      */
     @Override
     public void send(SendPacket packet) {
-        queue.offer(packet);
-        // 当前不是发送状态
-        if (isSending.compareAndSet(false, true)) {
-            sendNextPacket();
+        synchronized (queueLock) {
+            queue.offer(packet);
+            // 当前不是发送状态
+            if (isSending.compareAndSet(false, true)) {
+                if (reader.requestTakePacket()) {
+                    // 请求发送
+                    requestSend();
+                }
+            }
         }
+    }
+
+    /**
+     * 取消发送
+     * @param packet
+     */
+    @Override
+    public void cancel(SendPacket packet) {
+        // 从队列中移除
+        boolean ret;
+        synchronized (queueLock) {
+            ret = queue.remove(packet);
+        }
+        if (ret == true) {
+            packet.cancel();
+            return;
+        }
+        reader.cancel(packet);
     }
 
     /**
      * 拿发送包
      * @return
      */
-    private SendPacket takePacket() {
-        SendPacket packet = queue.poll();
-        if (packet != null && packet.isCanceled()) {
+    @Override
+    public SendPacket takePacket() {
+        SendPacket packet;
+        synchronized (queueLock) {
+            packet = queue.poll();
+            if (packet == null) {
+                isSending.set(false);
+                return null;
+            }
+        }
+        if (packet.isCanceled()) {
             // 已取消，不用发送
             return takePacket();
         }
@@ -64,35 +88,19 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
     }
 
     /**
-     * 发送下一个包
+     * 完成packet包发送
+     * @param packet    发送包
+     * @param isSucceed 是否成功发送完成
      */
-    private void sendNextPacket() {
-        SendPacket temp = packetTemp;
-        if (temp != null) {
-            CloseUtils.close(temp);
-        }
-        SendPacket packet = packetTemp = takePacket();
-        // 队列为空了，就代表当前没有发送包要发送了
-        if (packet == null) {
-            isSending.set(false);
-            return;
-        }
-        // 发送数据
-        total = packet.length();
-        position = 0;
-        sendCurrentPacket();
+    @Override
+    public void completedPacket(SendPacket packet, boolean isSucceed) {
+        CloseUtils.close(packet);
     }
 
     /**
-     * 发送当前包
+     * 请求网络进行数据发送
      */
-    private void sendCurrentPacket() {
-        if (position >= total) {
-            completePacket(position == total);
-            sendNextPacket();
-            return;
-        }
-        // 如果没有发送完全
+    private void requestSend() {
         try {
             // 注册发送下一条数据的操作
             sender.postSendAsync();
@@ -102,23 +110,7 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
     }
 
     /**
-     * 完成packet发送
-     * @param isSucceed  是否成功
-     */
-    private void completePacket(boolean isSucceed) {
-        SendPacket packet = this.packetTemp;
-        if (packet == null)
-            return;
-        CloseUtils.close(packet);
-        CloseUtils.close(packetChannel);
-        packetTemp = null;
-        packetChannel = null;
-        total = 0;
-        position = 0;
-    }
-
-    /**
-     * 关闭并通知出去
+     * 关闭自己并通知出去
      */
     private void closeAndNotify() {
         CloseUtils.close(this);
@@ -133,14 +125,9 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
         if (isClosed.compareAndSet(false, true)) {
             // 设置为没有发送状态
             isSending.set(false);
-            // 异常关闭导致的完成的操作
-            completePacket(false);
+            // reader的关闭操作
+            reader.close();
         }
-    }
-
-    @Override
-    public void cancel(SendPacket packet) {
-
     }
 
     /**
@@ -149,33 +136,32 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
      */
     @Override
     public IoArgs provideIoArgs() {
-        IoArgs args = this.ioArgs;
-        // 为首包
-        if (packetChannel == null) {
-            packetChannel = Channels.newChannel(packetTemp.open());
-            args.limit(4);
-            // args.writeLength((int) packetTemp.length());
-        } else {
-            args.limit((int) Math.min(args.capacity(), total - position));
-            try {
-                int count = args.readFrom(packetChannel);
-                position += count;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        return args;
+        return reader.fillData();
     }
 
+    /**
+     * 消费数据失败
+     * @param args
+     * @param e
+     */
     @Override
     public void onConsumeFailed(IoArgs args, Exception e) {
-        e.printStackTrace();
+        if (args != null) {
+            e.printStackTrace();
+        } else {
+            // TODO: 2022/3/17
+        }
     }
 
+    /**
+     * 消费完全
+     * @param args
+     */
     @Override
     public void onConsumeCompleted(IoArgs args) {
         // 继续发送当前包
-        sendCurrentPacket();
+        if (reader.requestTakePacket()) {
+            requestSend();
+        }
     }
 }
