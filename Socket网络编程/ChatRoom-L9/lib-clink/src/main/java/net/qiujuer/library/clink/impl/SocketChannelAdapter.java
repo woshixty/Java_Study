@@ -98,12 +98,12 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
             try {
                 // 具体的读取操作
                 if (args == null) {
-                    processor.onConsumeFailed(null, new IOException("ProvideIoArgs is null"));
+                    processor.onConsumeFailed(null, new IOException("ProvideIoArgs is null."));
                 } else if (args.readFrom(channel) > 0) {
                     // 读取完成回调
                     processor.onConsumeCompleted(args);
                 } else {
-                    processor.onConsumeFailed(args, new IOException("Cannot write any data!"));
+                    processor.onConsumeFailed(args, new IOException("Cannot read any data!"));
                 }
             } catch (IOException ignored) {
                 CloseUtils.close(SocketChannelAdapter.this);
@@ -128,10 +128,10 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
                 if (args == null) {
                     processor.onConsumeFailed(null, new IOException("ProvideIoArgs is null."));
                 } else if (args.writeTo(channel) > 0) {
-                    // 读取完成回调
+                    // 输出完成回调
                     processor.onConsumeCompleted(args);
                 } else {
-                    processor.onConsumeFailed(args, new IOException("Cannot read any data!"));
+                    processor.onConsumeFailed(args, new IOException("Cannot write any data!"));
                 }
             } catch (IOException ignored) {
                 CloseUtils.close(SocketChannelAdapter.this);
