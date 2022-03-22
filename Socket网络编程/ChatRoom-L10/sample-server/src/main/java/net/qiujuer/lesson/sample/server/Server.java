@@ -32,8 +32,10 @@ public class Server {
         String str;
         do {
             str = bufferedReader.readLine();
-            if ("00bye00".equalsIgnoreCase(str))
+            if (str == null || "00bye00".equalsIgnoreCase(str))
                 break;
+            if (str.length() == 0)
+                continue;
             // 发送字符串
             tcpServer.broadcast(str);
         } while (true);

@@ -19,7 +19,7 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsE
     private final Receiver receiver;
     // 接收回调定义
     private final ReceivePacketCallback callback;
-
+    // 异步写
     private final AsyncPacketWriter writer = new AsyncPacketWriter(this);
 
     public AsyncReceiveDispatcher(Receiver receiver, ReceivePacketCallback callback) {
@@ -100,10 +100,12 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsE
      */
     @Override
     public void onConsumeCompleted(IoArgs args) {
+        if (isClosed.get())
+            return;
         // 有数据则重复消费
         do {
             writer.consumeIoArgs(args);
-        } while (args.remained());
+        } while (args.remained() && !isClosed.get());
         registerReceive();
     }
 

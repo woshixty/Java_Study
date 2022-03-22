@@ -139,6 +139,8 @@ public class AsyncPacketReader implements Closeable {
                 SendPacket packet = ((AbsSendPacketFrame) frame).getPacket();
                 provider.completedPacket(packet, false);
             }
+            // 10-3 BUG-FIX
+            node = node.next;
         }
         nodeSize = 0;
         node = null;

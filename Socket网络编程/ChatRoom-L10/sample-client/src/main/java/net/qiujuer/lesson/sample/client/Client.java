@@ -51,9 +51,10 @@ public class Client {
             // 键盘读取一行
             String str = input.readLine();
             // 退出连接
-            if ("00bye00".equalsIgnoreCase(str)) {
+            if (str == null || "00bye00".equalsIgnoreCase(str))
                 break;
-            }
+            if (str.length() == 0)
+                continue;
             // 发送文件到服务器
             // --f url
             if (str.startsWith("--f")) {
