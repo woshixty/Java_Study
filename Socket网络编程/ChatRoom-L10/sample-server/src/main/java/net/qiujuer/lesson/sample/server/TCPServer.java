@@ -146,17 +146,15 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
                 try {
                     // 阻塞
                     if (selector.select() == 0) {
-                        if (done) {
+                        if (done)
                             break;
-                        }
                         continue;
                     }
                     // 当前有哪些事件就绪了
                     Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
                     while (iterator.hasNext()) {
-                        if (done) {
+                        if (done)
                             break;
-                        }
                         SelectionKey key = iterator.next();
                         iterator.remove();
                         // 检查当前Key的状态是否是我们关注的
@@ -171,6 +169,7 @@ public class TCPServer implements ClientHandler.ClientHandlerCallback {
                                 // 添加同步处理
                                 synchronized (TCPServer.this) {
                                     clientHandlerList.add(clientHandler);
+                                    System.out.println("当前客户端数量：" + clientHandlerList.size());
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();

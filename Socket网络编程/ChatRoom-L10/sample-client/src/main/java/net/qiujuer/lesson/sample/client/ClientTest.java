@@ -2,6 +2,8 @@ package net.qiujuer.lesson.sample.client;
 
 import net.qiujuer.lesson.sample.client.bean.ServerInfo;
 import net.qiujuer.lesson.sample.foo.Foo;
+import net.qiujuer.library.clink.core.IoContext;
+import net.qiujuer.library.clink.impl.IoSelectorProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +16,8 @@ public class ClientTest {
     public static void main(String[] args) throws IOException {
         File cachePath = Foo.getCacheDir("test");
 
+        IoContext.setup().ioProvider(new IoSelectorProvider()).start();
+
         ServerInfo info = UDPSearcher.searchServer(10000);
         System.out.println("Server:" + info);
         if (info == null) {
@@ -23,32 +27,28 @@ public class ClientTest {
         // 当前连接数量
         int size = 0;
         final List<TCPClient> tcpClients = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 200; i++) {
             try {
                 TCPClient tcpClient = TCPClient.startWith(info, cachePath);
                 if (tcpClient == null) {
-                    System.out.println("连接异常");
-                    continue;
+                    throw new NullPointerException();
                 }
                 tcpClients.add(tcpClient);
                 System.out.println("连接成功：" + (++size));
             } catch (IOException e) {
                 System.out.println("连接异常");
-            }
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                break;
             }
         }
-        System.in.read();
+
+//        System.in.read();
+
         Runnable runnable = () -> {
             while (!done) {
-                for (TCPClient tcpClient : tcpClients) {
+                for (TCPClient tcpClient : tcpClients)
                     tcpClient.send("Hello~~");
-                }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -56,7 +56,9 @@ public class ClientTest {
         };
         Thread thread = new Thread(runnable);
         thread.start();
+
         System.in.read();
+
         // 等待线程完成
         done = true;
         try {
@@ -69,6 +71,4 @@ public class ClientTest {
             tcpClient.exit();
         }
     }
-
-
 }

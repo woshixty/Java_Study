@@ -44,9 +44,9 @@ public class IoSelectorProvider implements IoProvider {
         readSelector = Selector.open();
         writeSelector = Selector.open();
         // 创建输入输出线程池，4个线程
-        inputHandlePool = Executors.newFixedThreadPool(4,
+        inputHandlePool = Executors.newFixedThreadPool(20,
                 new IoProviderThreadFactory("IoProvider-Input-Thread-"));
-        outputHandlePool = Executors.newFixedThreadPool(4,
+        outputHandlePool = Executors.newFixedThreadPool(20,
                 new IoProviderThreadFactory("IoProvider-Output-Thread-"));
         // 开始输出输入的事件监听，分别为其启动一个线程
         startRead();
