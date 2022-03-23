@@ -165,6 +165,9 @@ public class TCPServer implements ServerAcceptor.AcceptListener, Group.GroupMess
         protected boolean consume(ClientHandler handler, Connector connector) {
             synchronized (clientHandlerList) {
                 clientHandlerList.remove(handler);
+                // 移除群聊的客户端
+                Group group = groups.get(handler);
+                group.removeMember(handler);
             }
             return true;
         }

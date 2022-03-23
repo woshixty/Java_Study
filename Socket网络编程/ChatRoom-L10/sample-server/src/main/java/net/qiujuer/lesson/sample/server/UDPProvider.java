@@ -120,7 +120,7 @@ class UDPProvider {
             }
 
             // 完成
-            System.out.println("UDPProvider Finished.");
+            System.out.println("UDPProvider Finished!");
         }
 
         private void close() {
