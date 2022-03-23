@@ -60,10 +60,18 @@ public class ClientHandler extends Connector {
     @Override
     protected void onReceivedPacket(ReceivePacket packet) {
         super.onReceivedPacket(packet);
+        // TODO: 2022/3/23 换成下面注释掉的
+        if (packet.type() == Packet.TYPE_MEMORY_STRING) {
+            String string = (java.lang.String) packet.entity();
+            System.out.println(key.toString() + ":" + string);
+            clientHandlerCallback.onNewMessageArrived(this, string);
+        }
+        /**
         if (packet.type() == Packet.TYPE_MEMORY_STRING) {
             String string = (java.lang.String) packet.entity();
             clientHandlerCallback.onNewMessageArrived(this, string);
         }
+         */
     }
 
     /**

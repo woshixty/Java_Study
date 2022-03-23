@@ -15,7 +15,7 @@ public interface IoProvider extends Closeable {
      * @param callback
      * @return
      */
-    boolean registerInput(SocketChannel channel, HandleInputCallback callback);
+    boolean registerInput(SocketChannel channel, HandleProviderCallback callback);
 
     /**
      * 同注册输入
@@ -23,7 +23,7 @@ public interface IoProvider extends Closeable {
      * @param callback
      * @return
      */
-    boolean registerOutput(SocketChannel channel, HandleOutputCallback callback);
+    boolean registerOutput(SocketChannel channel, HandleProviderCallback callback);
 
     /**
      * 解绑
@@ -38,31 +38,24 @@ public interface IoProvider extends Closeable {
     void unRegisterOutput(SocketChannel channel);
 
     /**
-     * 当有数据可读时进行回调
-     */
-    abstract class HandleInputCallback implements Runnable {
-        @Override
-        public final void run() {
-            canProviderInput();
-        }
-
-        /**
-         * 可以从SocketChannel读取数据
-         */
-        protected abstract void canProviderInput();
-    }
-
-    /**
      * 与上述读相比
      * 添加了一个附件
      */
-    abstract class HandleOutputCallback implements Runnable {
+    abstract class HandleProviderCallback implements Runnable {
+        protected volatile IoArgs attach;
+
         @Override
         public final void run() {
-            canProviderOutput();
+            onProviderIo(attach);
         }
 
-        protected abstract void canProviderOutput();
+        protected abstract void onProviderIo(IoArgs args);
+
+        public void checkAttachNull() throws IllegalAccessException {
+            if (attach != null) {
+                throw new IllegalAccessException("Current attach is not empty");
+            }
+        }
     }
 
 }

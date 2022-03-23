@@ -94,9 +94,8 @@ public abstract class Connector implements Closeable, SocketChannelAdapter.OnCha
      * @param packet
      */
     protected void onReceivedPacket(ReceivePacket packet) {
-        /**
+        // TODO: 2022/3/23 注释掉下面的
         System.out.println(key.toString() + ": [NEW Packet] Type:" + packet.type() + ", Length:" + packet.length);
-         */
     }
 
     /**

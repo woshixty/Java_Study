@@ -19,5 +19,5 @@ public interface Receiver extends Closeable {
      * @return
      * @throws IOException
      */
-    boolean postReceiveAsync() throws IOException;
+    boolean postReceiveAsync() throws IOException, IllegalAccessException;
 }

@@ -67,7 +67,7 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsE
     private void registerReceive() {
         try {
             receiver.postReceiveAsync();
-        } catch (IOException e) {
+        } catch (IOException | IllegalAccessException e) {
             closeAndNotify();
         }
     }
@@ -79,7 +79,10 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsE
      */
     @Override
     public IoArgs provideIoArgs() {
-        return writer.takeIoArgs();
+        IoArgs ioArgs = writer.takeIoArgs();
+        // 一份新的IoArgs需要调用一次开始写入数据的操作
+        ioArgs.startWriting();
+        return ioArgs;
     }
 
     /**
@@ -102,6 +105,8 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsE
     public void onConsumeCompleted(IoArgs args) {
         if (isClosed.get())
             return;
+        // 消费数据之前
+        args.finishWriting();
         // 有数据则重复消费
         do {
             writer.consumeIoArgs(args);

@@ -2,7 +2,7 @@ package net.qiujuer.library.clink.core;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.SocketChannel;
@@ -81,15 +81,15 @@ public class IoArgs {
      * @throws IOException
      */
     public int readFrom(SocketChannel channel) throws IOException {
-        startWriting();
+        ByteBuffer buffer = this.buffer;
         int bytesProduced = 0;
-        while (buffer.hasRemaining()) {
-            int len = channel.read(buffer);
+        int len;
+        do {
+            len = channel.read(buffer);
             if (len < 0)
-                throw new EOFException();
+                throw new EOFException("Cannot read any data with：" + channel);
             bytesProduced += len;
-        }
-        finishWriting();
+        } while (buffer.hasRemaining() && len != 0);
         return bytesProduced;
     }
 
@@ -124,14 +124,15 @@ public class IoArgs {
      * @throws IOException
      */
     public int writeTo(SocketChannel channel) throws IOException {
+        ByteBuffer buffer = this.buffer;
         int bytesProduced = 0;
-        while (buffer.hasRemaining()) {
-            int len = channel.write(buffer);
-            if (len < 0) {
-                throw new EOFException();
-            }
+        int len;
+        do {
+            len = channel.write(buffer);
+            if (len < 0)
+                throw new EOFException("Current write any data with：" + channel);
             bytesProduced += len;
-        }
+        } while (buffer.hasRemaining() && len != 0);
         return bytesProduced;
     }
 
