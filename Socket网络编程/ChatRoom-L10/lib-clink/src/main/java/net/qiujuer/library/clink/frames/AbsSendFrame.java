@@ -20,6 +20,10 @@ public abstract class AbsSendFrame extends Frame {
         bodyRemaining = length;
     }
 
+    public AbsSendFrame(byte[] header) {
+        super(header);
+    }
+
     /**
      * 数据消费部分，同步方法
      * @param args 数据

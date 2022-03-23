@@ -27,5 +27,10 @@ public interface ReceiveDispatcher extends Closeable {
          * @param packet
          */
         void onReceivePacketCompleted(ReceivePacket packet);
+
+        /**
+         * 收到心跳包
+         */
+        void onReceiveHeartbeat();
     }
 }

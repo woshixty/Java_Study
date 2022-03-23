@@ -10,6 +10,7 @@ public abstract class Frame {
     public static final int FRAME_HEADER_LENGTH = 6;
     // 单帧最大容量-64KB
     public static final int MAX_CAPACITY = 64 * 1024 - 1;
+
     // 一些Type值
     // Packet头信息帧
     public static final byte TYPE_PACKET_HEADER = 11;
@@ -19,6 +20,8 @@ public abstract class Frame {
     public static final byte TYPE_COMMAND_SEND_CANCEL = 41;
     // 指令-接受拒绝
     public static final byte TYPE_COMMAND_RECEIVE_REJECT = 42;
+    // 指令-心跳包
+    public static final byte TYPE_COMMAND_HEARTBEAT = 42;
 
     // Flag标记
     public static final byte FLAG_NONE = 0;

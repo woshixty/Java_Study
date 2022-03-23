@@ -138,4 +138,12 @@ public class AsyncReceiveDispatcher implements ReceiveDispatcher, IoArgs.IoArgsE
         CloseUtils.close(packet);
         callback.onReceivePacketCompleted(packet);
     }
+
+    /**
+     * 收到心跳帧
+     */
+    @Override
+    public void onReceivedHeartbeat() {
+        callback.onReceiveHeartbeat();
+    }
 }
