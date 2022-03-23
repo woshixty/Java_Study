@@ -87,7 +87,7 @@ public class IoArgs {
         do {
             len = channel.read(buffer);
             if (len < 0)
-                throw new EOFException("Cannot read any data with：" + channel);
+                throw new EOFException("Cannot read any data with:" + channel);
             bytesProduced += len;
         } while (buffer.hasRemaining() && len != 0);
         return bytesProduced;
@@ -130,7 +130,7 @@ public class IoArgs {
         do {
             len = channel.write(buffer);
             if (len < 0)
-                throw new EOFException("Current write any data with：" + channel);
+                throw new EOFException("Current write any data with:" + channel);
             bytesProduced += len;
         } while (buffer.hasRemaining() && len != 0);
         return bytesProduced;

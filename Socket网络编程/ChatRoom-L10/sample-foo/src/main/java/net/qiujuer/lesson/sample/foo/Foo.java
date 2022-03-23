@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class Foo {
+    public static String COMMAND_EXIT = "00bye00";
+
     public static void main(String[] args) {
         System.out.println(System.getProperty("user.dir"));
     }

@@ -34,7 +34,7 @@ public class ClientTest {
                     throw new NullPointerException();
                 }
                 tcpClients.add(tcpClient);
-                System.out.println("连接成功：" + (++size));
+                System.out.println("连接成功:" + (++size));
             } catch (IOException e) {
                 System.out.println("连接异常");
                 break;
@@ -57,7 +57,7 @@ public class ClientTest {
         Thread thread = new Thread(runnable);
         thread.start();
 
-        System.in.read();
+//        System.in.read();
 
         // 等待线程完成
         done = true;

@@ -81,8 +81,8 @@ public class TCPClient extends Connector {
         socketChannel.connect(new InetSocketAddress(Inet4Address.getByName(info.getAddress()), info.getPort()));
         // 打印信息
         System.out.println("已发起服务器连接，并进入后续流程～");
-        System.out.println("客户端信息：" + socketChannel.getLocalAddress());
-        System.out.println("服务器信息：" + socketChannel.getRemoteAddress());
+        System.out.println("客户端信息:" + socketChannel.getLocalAddress());
+        System.out.println("服务器信息:" + socketChannel.getRemoteAddress());
         try {
             return new TCPClient(socketChannel, cachePath);
         } catch (Exception e) {

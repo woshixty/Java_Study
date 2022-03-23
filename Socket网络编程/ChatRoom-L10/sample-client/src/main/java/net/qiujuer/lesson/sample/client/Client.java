@@ -51,7 +51,7 @@ public class Client {
             // 键盘读取一行
             String str = input.readLine();
             // 退出连接
-            if (str == null || "00bye00".equalsIgnoreCase(str))
+            if (str == null || Foo.COMMAND_EXIT.equalsIgnoreCase(str))
                 break;
             if (str.length() == 0)
                 continue;
