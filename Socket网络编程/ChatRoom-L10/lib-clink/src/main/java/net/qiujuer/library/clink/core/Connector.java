@@ -86,7 +86,6 @@ public abstract class Connector implements Closeable, SocketChannelAdapter.OnCha
      */
     @Override
     public void onChannelClosed(SocketChannel channel) {
-
     }
 
     /**
@@ -128,4 +127,8 @@ public abstract class Connector implements Closeable, SocketChannelAdapter.OnCha
             onReceivedPacket(packet);
         }
     };
+
+    public UUID getKey() {
+        return key;
+    }
 }

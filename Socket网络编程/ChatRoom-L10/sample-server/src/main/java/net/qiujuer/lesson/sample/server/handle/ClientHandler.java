@@ -48,6 +48,7 @@ public class ClientHandler extends Connector {
      */
     @Override
     public void onChannelClosed(SocketChannel channel) {
+        System.out.println("222");
         super.onChannelClosed(channel);
         exitBySelf();
     }

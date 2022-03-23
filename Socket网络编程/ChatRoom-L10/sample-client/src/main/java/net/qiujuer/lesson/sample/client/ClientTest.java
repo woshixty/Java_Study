@@ -27,7 +27,7 @@ public class ClientTest {
         // 当前连接数量
         int size = 0;
         final List<TCPClient> tcpClients = new ArrayList<>();
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 20; i++) {
             try {
                 TCPClient tcpClient = TCPClient.startWith(info, cachePath);
                 if (tcpClient == null) {
@@ -57,7 +57,7 @@ public class ClientTest {
         Thread thread = new Thread(runnable);
         thread.start();
 
-//        System.in.read();
+        System.in.read();
 
         // 等待线程完成
         done = true;

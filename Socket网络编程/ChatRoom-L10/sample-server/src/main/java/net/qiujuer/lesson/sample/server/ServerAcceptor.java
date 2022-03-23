@@ -30,7 +30,7 @@ public class ServerAcceptor extends Thread {
      * 等待该线程启动
      * @return
      */
-    boolean awaitRunning() {
+    public boolean awaitRunning() {
         try {
             latch.await();
             return true;
