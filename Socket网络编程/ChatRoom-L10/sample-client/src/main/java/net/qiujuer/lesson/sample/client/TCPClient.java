@@ -36,7 +36,6 @@ public class TCPClient extends Connector {
      */
     @Override
     public void onChannelClosed(SocketChannel channel) {
-        System.out.println("333");
         super.onChannelClosed(channel);
         System.out.println("连接已关闭, 无法读取数据");
     }

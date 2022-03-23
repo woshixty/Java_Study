@@ -86,7 +86,6 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
             // 关闭
             CloseUtils.close(channel);
             // 回调当前Channel已关闭
-            System.out.println("111");
             listener.onChannelClosed(channel);
         }
     }

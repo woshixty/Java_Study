@@ -118,7 +118,6 @@ class UDPProvider {
             } finally {
                 close();
             }
-
             // 完成
             System.out.println("UDPProvider Finished!");
         }
