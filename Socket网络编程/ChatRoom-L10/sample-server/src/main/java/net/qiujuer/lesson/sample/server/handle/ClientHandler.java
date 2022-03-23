@@ -1,6 +1,7 @@
 package net.qiujuer.lesson.sample.server.handle;
 
 import net.qiujuer.lesson.sample.foo.Foo;
+import net.qiujuer.library.clink.box.StringReceivePacket;
 import net.qiujuer.library.clink.core.Connector;
 import net.qiujuer.library.clink.core.Packet;
 import net.qiujuer.library.clink.core.ReceivePacket;
@@ -9,20 +10,22 @@ import net.qiujuer.library.clink.utils.CloseUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.Executor;
 
 /**
  * 客户端处理类
  */
 public class ClientHandler extends Connector {
     private final File cachePath;
-    private final ClientHandlerCallback clientHandlerCallback;
     private final String clientInfo;
+    private final Executor deliveryPool;
+    private final ConnectorCloseChain closeChain = new DefaultPrintConnectorCloseChain();
+    private final ConnectorStringPacketChain stringPacketChain = new DefaultNonConnectorStringPacketChain();
 
-    public ClientHandler(SocketChannel socketChannel, ClientHandlerCallback clientHandlerCallback, File cachePath) throws IOException {
-        this.clientHandlerCallback = clientHandlerCallback;
+    public ClientHandler(SocketChannel socketChannel, File cachePath, Executor deliveryPool) throws IOException {
         this.clientInfo = socketChannel.getRemoteAddress().toString();
         this.cachePath = cachePath;
-        System.out.println("新客户端连接:" + clientInfo);
+        this.deliveryPool = deliveryPool;
         setup(socketChannel);
     }
 
@@ -39,7 +42,7 @@ public class ClientHandler extends Connector {
      */
     public void exit() {
         CloseUtils.close(this);
-        System.out.println("客户端已退出:" + clientInfo);
+        closeChain.handle(this, this);
     }
 
     /**
@@ -48,9 +51,8 @@ public class ClientHandler extends Connector {
      */
     @Override
     public void onChannelClosed(SocketChannel channel) {
-        System.out.println("222");
         super.onChannelClosed(channel);
-        exitBySelf();
+        closeChain.handle(this, this);
     }
 
     /**
@@ -69,36 +71,30 @@ public class ClientHandler extends Connector {
     @Override
     protected void onReceivedPacket(ReceivePacket packet) {
         super.onReceivedPacket(packet);
-        // TODO: 2022/3/23 换成下面注释掉的
-        if (packet.type() == Packet.TYPE_MEMORY_STRING) {
-            String string = (java.lang.String) packet.entity();
-            System.out.println(key.toString() + ":" + string);
-            clientHandlerCallback.onNewMessageArrived(this, string);
+        switch (packet.type()) {
+            case Packet.TYPE_MEMORY_STRING: {
+                deliveryStringPacket((StringReceivePacket) packet);
+                break;
+            }
+            default: {
+                System.out.println("New Packet:" + packet.type() + "-" + packet.length());
+            }
         }
-        /**
-        if (packet.type() == Packet.TYPE_MEMORY_STRING) {
-            String string = (java.lang.String) packet.entity();
-            clientHandlerCallback.onNewMessageArrived(this, string);
-        }
-         */
     }
 
     /**
-     * 自我关闭
+     * 责任链模式的调度
+     * @param packet
      */
-    private void exitBySelf() {
-        exit();
-        clientHandlerCallback.onSelfClosed(this);
+    private void deliveryStringPacket(StringReceivePacket packet) {
+        deliveryPool.execute(() -> {stringPacketChain.handle(this, packet);});
     }
 
-    /**
-     * 客户端处理回调接口
-     */
-    public interface ClientHandlerCallback {
-        // 自身关闭通知
-        void onSelfClosed(ClientHandler handler);
+    public ConnectorStringPacketChain getStringPacketChain() {
+        return stringPacketChain;
+    }
 
-        // 收到消息时通知
-        void onNewMessageArrived(ClientHandler handler, String msg);
+    public ConnectorCloseChain getCloseChain() {
+        return closeChain;
     }
 }

@@ -36,8 +36,9 @@ public class TCPClient extends Connector {
      */
     @Override
     public void onChannelClosed(SocketChannel channel) {
+        System.out.println("333");
         super.onChannelClosed(channel);
-        System.out.println("连接已关闭，无法读取数据");
+        System.out.println("连接已关闭, 无法读取数据");
     }
 
     /**
@@ -80,7 +81,7 @@ public class TCPClient extends Connector {
         // 连接本地，端口2000
         socketChannel.connect(new InetSocketAddress(Inet4Address.getByName(info.getAddress()), info.getPort()));
         // 打印信息
-        System.out.println("已发起服务器连接，并进入后续流程～");
+        System.out.println("已发起服务器连接, 并进入后续流程～");
         System.out.println("客户端信息:" + socketChannel.getLocalAddress());
         System.out.println("服务器信息:" + socketChannel.getRemoteAddress());
         try {

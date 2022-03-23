@@ -6,6 +6,9 @@ import java.util.UUID;
 
 public class Foo {
     public static String COMMAND_EXIT = "00bye00";
+    public static String COMMAND_GROUP_JOIN = "--m g join";
+    public static String COMMAND_GROUP_LEAVE = "--m g leave";
+    public static String DEFAULT_GROUP_NAME = "XTY";
 
     public static void main(String[] args) {
         System.out.println(System.getProperty("user.dir"));
