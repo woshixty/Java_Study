@@ -145,9 +145,11 @@ public class TCPServer implements ServerAcceptor.AcceptListener, Group.GroupMess
         try {
             ClientHandler clientHandler = new ClientHandler(channel, cachePath, deliveryPool);
             System.out.println(clientHandler.getClientInfo() + ":Connected!");
+            // 添加收到消息时候的处理责任链
             clientHandler.getStringPacketChain().appendLast(statistics.statisticsChain()).appendLast(new ParseCommandConnectorStringPacketChain());
+            // 添加关闭链接时候的责任链
             clientHandler.getCloseChain().appendLast(new RemoveQueueOnConnectorClosedChain());
-            synchronized (TCPServer.this) {
+            synchronized (clientHandlerList) {
                 clientHandlerList.add(clientHandler);
                 System.out.println("当前客户端数量:" + clientHandlerList.size());
             }

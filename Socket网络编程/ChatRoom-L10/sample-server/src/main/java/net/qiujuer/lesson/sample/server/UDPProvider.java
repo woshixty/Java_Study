@@ -35,7 +35,7 @@ class UDPProvider {
         final byte[] buffer = new byte[128];
 
         Provider(String sn, int port) {
-            super();
+            super("Server-UDPProvider-Thread");
             this.sn = sn.getBytes();
             this.port = port;
         }
@@ -43,20 +43,15 @@ class UDPProvider {
         @Override
         public void run() {
             super.run();
-
             System.out.println("UDPProvider Started.");
-
             try {
                 // 监听20000 端口
                 ds = new DatagramSocket(UDPConstants.PORT_SERVER);
                 // 接收消息的Packet
                 DatagramPacket receivePack = new DatagramPacket(buffer, buffer.length);
-
                 while (!done) {
-
                     // 接收
                     ds.receive(receivePack);
-
                     // 打印接收到的信息与发送者的信息
                     // 发送者的IP地址
                     String clientIp = receivePack.getAddress().getHostAddress();
@@ -69,16 +64,13 @@ class UDPProvider {
                     //报文合法性标志
                     boolean isValid = clientDataLen >= (UDPConstants.HEADER.length + 2 + 4)
                             && ByteUtils.startsWith(clientData, UDPConstants.HEADER);
-
                     //打印信息
                     System.out.println("UDPProvider receive form ip:" + clientIp
                             + "\tport:" + clientPort + "\tdataValid:" + isValid);
-
                     if (!isValid) {
                         // 无效继续
                         continue;
                     }
-
                     // 解析命令与回送端口
                     int index = UDPConstants.HEADER.length;
                     // https://blog.csdn.net/i6223671/article/details/88924481
@@ -91,7 +83,6 @@ class UDPProvider {
                             ((clientData[index++] & 0xff) << 16) |
                             ((clientData[index++] & 0xff) << 8) |
                             ((clientData[index] & 0xff)));
-
                     // 判断合法性
                     if (cmd == 1 && responsePort > 0) {
                         // 构建一份回送数据
