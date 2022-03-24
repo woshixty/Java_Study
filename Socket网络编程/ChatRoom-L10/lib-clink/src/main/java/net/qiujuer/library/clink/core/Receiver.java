@@ -20,4 +20,10 @@ public interface Receiver extends Closeable {
      * @throws IOException
      */
     boolean postReceiveAsync() throws IOException, IllegalAccessException;
+
+    /**
+     * 获取最后一次读的时间点
+     * @return
+     */
+    long getLastReadTime();
 }

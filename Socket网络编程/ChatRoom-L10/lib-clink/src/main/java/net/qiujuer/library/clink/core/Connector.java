@@ -7,11 +7,14 @@ import net.qiujuer.library.clink.box.StringSendPacket;
 import net.qiujuer.library.clink.impl.SocketChannelAdapter;
 import net.qiujuer.library.clink.impl.async.AsyncReceiveDispatcher;
 import net.qiujuer.library.clink.impl.async.AsyncSendDispatcher;
+import net.qiujuer.library.clink.utils.CloseUtils;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,6 +31,7 @@ public abstract class Connector implements Closeable, SocketChannelAdapter.OnCha
     private Receiver receiver;
     private SendDispatcher sendDispatcher;
     private ReceiveDispatcher receiveDispatcher;
+    private final List<ScheduleJob> scheduleJobs = new ArrayList<>(4);
 
     /**
      * 建立连接
@@ -60,6 +64,43 @@ public abstract class Connector implements Closeable, SocketChannelAdapter.OnCha
     }
 
     /**
+     * 在队列中添加一个定时任务
+     * @param job
+     */
+    public void schedule(ScheduleJob job) {
+        synchronized (scheduleJobs) {
+            if (scheduleJobs.contains(job)) {
+                return;
+            }
+            IoContext ioContext = IoContext.get();
+            Scheduler scheduler = ioContext.getScheduler();
+            job.schedule(scheduler);
+            scheduleJobs.add(job);
+        }
+    }
+
+    /**
+     * 发送超时事件
+     */
+    public void fireIdleTimeoutEvent() {
+        sendDispatcher.sendHeartbeat();
+    }
+
+    /**
+     * 发送超时异常
+     * @param throwable
+     */
+    public void fireExceptionCaught(Throwable throwable) {}
+
+    /**
+     * 获取最后活跃时间点
+     * @return
+     */
+    public long getLastActiveTime() {
+        return Math.max(sender.getLastWriterTime(), receiver.getLastReadTime());
+    }
+
+    /**
      * 发送文件
      * @param packet
      */
@@ -86,6 +127,13 @@ public abstract class Connector implements Closeable, SocketChannelAdapter.OnCha
      */
     @Override
     public void onChannelClosed(SocketChannel channel) {
+        synchronized (scheduleJobs) {
+            for (ScheduleJob scheduleJob : scheduleJobs) {
+                scheduleJob.unSchedule();
+            }
+            scheduleJobs.clear();
+        }
+        CloseUtils.close(this);
     }
 
     /**

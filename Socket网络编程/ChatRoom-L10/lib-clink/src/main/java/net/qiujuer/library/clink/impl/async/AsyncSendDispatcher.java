@@ -52,7 +52,9 @@ public class AsyncSendDispatcher implements SendDispatcher, IoArgs.IoArgsEventPr
     public void sendHeartbeat() {
         if (queue.size() > 0)
             return;
-        reader.requestSendHeartbeatFrame();
+        if (reader.requestSendHeartbeatFrame()) {
+            requestSend();
+        }
     }
 
     /**

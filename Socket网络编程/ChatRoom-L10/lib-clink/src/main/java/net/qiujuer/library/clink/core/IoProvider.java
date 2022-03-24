@@ -49,8 +49,16 @@ public interface IoProvider extends Closeable {
             onProviderIo(attach);
         }
 
+        /**
+         * 当有数据可读或者可写时进行回调这个方法
+         * @param args
+         */
         protected abstract void onProviderIo(IoArgs args);
 
+        /**
+         * 检查attach是否为null
+         * @throws IllegalAccessException
+         */
         public void checkAttachNull() throws IllegalAccessException {
             if (attach != null) {
                 throw new IllegalAccessException("Current attach is not empty");

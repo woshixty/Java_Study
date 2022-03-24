@@ -26,6 +26,9 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
     // 对于当前的发送与接收的回调
     private IoArgs.IoArgsEventProcessor receiveIoEventProcessor;
     private IoArgs.IoArgsEventProcessor sendIoEventProcessor;
+    // 时间点
+    private volatile long lastReadTime = System.currentTimeMillis();
+    private volatile long lastWriteTime = System.currentTimeMillis();
 
     public SocketChannelAdapter(SocketChannel channel, IoProvider ioProvider,
                                 OnChannelStatusChangedListener listener) throws IOException {
@@ -59,6 +62,16 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
     }
 
     @Override
+    public long getLastReadTime() {
+        return lastReadTime;
+    }
+
+    @Override
+    public long getLastWriterTime() {
+        return lastWriteTime;
+    }
+
+    @Override
     public void setSendListener(IoArgs.IoArgsEventProcessor processor) {
         sendIoEventProcessor = processor;
     }
@@ -72,9 +85,6 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
         return ioProvider.registerOutput(channel, outputCallback);
     }
 
-    /**
-     * 关闭操作-原子操作
-     */
     @Override
     public void close() {
         // 原子操作
@@ -90,9 +100,6 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
         }
     }
 
-    /**
-     * 当有数据可读时进行回调这个方法
-     */
     private final IoProvider.HandleProviderCallback inputCallback = new IoProvider.HandleProviderCallback() {
         @Override
         protected void onProviderIo(IoArgs args) {
@@ -100,6 +107,7 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
             if (isClosed.get()) {
                 return;
             }
+            lastReadTime = System.currentTimeMillis();
             IoArgs.IoArgsEventProcessor processor = receiveIoEventProcessor;
             if (args == null) {
                 args = processor.provideIoArgs();
@@ -139,6 +147,7 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
             if (isClosed.get()) {
                 return;
             }
+            lastWriteTime = System.currentTimeMillis();
             IoArgs.IoArgsEventProcessor processor = sendIoEventProcessor;
             if (args == null) {
                 // 拿一份新的

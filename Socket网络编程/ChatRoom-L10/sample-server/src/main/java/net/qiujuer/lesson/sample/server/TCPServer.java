@@ -6,6 +6,7 @@ import net.qiujuer.lesson.sample.server.handle.ConnectorCloseChain;
 import net.qiujuer.lesson.sample.server.handle.ConnectorStringPacketChain;
 import net.qiujuer.library.clink.box.StringReceivePacket;
 import net.qiujuer.library.clink.core.Connector;
+import net.qiujuer.library.clink.core.schedule.IdleTimeoutScheduleJob;
 import net.qiujuer.library.clink.utils.CloseUtils;
 
 import java.io.File;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class TCPServer implements ServerAcceptor.AcceptListener, Group.GroupMessageAdapter {
     // 绑定本地的端口
@@ -86,15 +88,16 @@ public class TCPServer implements ServerAcceptor.AcceptListener, Group.GroupMess
      * 关闭TCP服务器
      */
     public void stop() {
-        if (acceptor != null) {
+        if (acceptor != null)
             acceptor.exit();
-        }
         // 依次将客户端列表关闭
+        ClientHandler[] clientHandlers;
         synchronized (clientHandlerList) {
-            for (ClientHandler clientHandler : clientHandlerList)
-                clientHandler.exit();
+            clientHandlers = clientHandlerList.toArray(new ClientHandler[0]);
             clientHandlerList.clear();
         }
+        for (ClientHandler clientHandler : clientHandlers)
+            clientHandler.exit();
         // 关闭channel和选择器
         CloseUtils.close(server);
         // 停止线程池
@@ -107,10 +110,12 @@ public class TCPServer implements ServerAcceptor.AcceptListener, Group.GroupMess
      */
     public void broadcast(String str) {
         str = "系统通知:" + str;
+        ClientHandler[] clientHandlers;
         synchronized (clientHandlerList) {
-            for (ClientHandler clientHandler : clientHandlerList)
-                senMessageToClient(clientHandler, str);
+            clientHandlers = clientHandlerList.toArray(new ClientHandler[0]);
         }
+        for (ClientHandler clientHandler : clientHandlers)
+            senMessageToClient(clientHandler, str);
     }
 
     /**
@@ -149,6 +154,9 @@ public class TCPServer implements ServerAcceptor.AcceptListener, Group.GroupMess
             clientHandler.getStringPacketChain().appendLast(statistics.statisticsChain()).appendLast(new ParseCommandConnectorStringPacketChain());
             // 添加关闭链接时候的责任链
             clientHandler.getCloseChain().appendLast(new RemoveQueueOnConnectorClosedChain());
+            // 添加空闲任务
+            IdleTimeoutScheduleJob scheduleJob = new IdleTimeoutScheduleJob(10, TimeUnit.SECONDS, clientHandler);
+            clientHandler.schedule(scheduleJob);
             synchronized (clientHandlerList) {
                 clientHandlerList.add(clientHandler);
                 System.out.println("当前客户端数量:" + clientHandlerList.size());
