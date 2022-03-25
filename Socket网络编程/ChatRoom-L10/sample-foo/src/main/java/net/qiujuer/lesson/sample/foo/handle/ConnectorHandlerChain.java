@@ -1,6 +1,4 @@
-package net.qiujuer.lesson.sample.server.handle;
-
-import net.qiujuer.library.clink.core.Connector;
+package net.qiujuer.lesson.sample.foo.handle;
 
 /**
  * 责任链默认结构封装
@@ -65,7 +63,7 @@ public abstract class ConnectorHandlerChain<Model> {
      * @param model
      * @return
      */
-    synchronized public boolean handle(ClientHandler handler, Model model) {
+    synchronized public boolean handle(ConnectorHandler handler, Model model) {
         ConnectorHandlerChain<Model> next = this.next;
         // 自己能消费就自己消费
         if (consume(handler, model)) {
@@ -78,9 +76,9 @@ public abstract class ConnectorHandlerChain<Model> {
         return consumeAgain(handler, model);
     }
 
-    protected abstract boolean consume(ClientHandler handler, Model model);
+    protected abstract boolean consume(ConnectorHandler handler, Model model);
 
-    protected boolean consumeAgain(ClientHandler handler, Model model) {
+    protected boolean consumeAgain(ConnectorHandler handler, Model model) {
         return false;
     }
 }

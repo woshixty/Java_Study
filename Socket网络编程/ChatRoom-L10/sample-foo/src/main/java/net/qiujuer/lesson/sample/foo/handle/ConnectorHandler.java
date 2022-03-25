@@ -1,8 +1,9 @@
-package net.qiujuer.lesson.sample.server.handle;
+package net.qiujuer.lesson.sample.foo.handle;
 
 import net.qiujuer.lesson.sample.foo.Foo;
 import net.qiujuer.library.clink.box.StringReceivePacket;
 import net.qiujuer.library.clink.core.Connector;
+import net.qiujuer.library.clink.core.IoContext;
 import net.qiujuer.library.clink.core.Packet;
 import net.qiujuer.library.clink.core.ReceivePacket;
 import net.qiujuer.library.clink.utils.CloseUtils;
@@ -10,22 +11,19 @@ import net.qiujuer.library.clink.utils.CloseUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
-import java.util.concurrent.Executor;
 
 /**
  * 客户端处理类
  */
-public class ClientHandler extends Connector {
+public class ConnectorHandler extends Connector {
     private final File cachePath;
     private final String clientInfo;
-    private final Executor deliveryPool;
     private final ConnectorCloseChain closeChain = new DefaultPrintConnectorCloseChain();
     private final ConnectorStringPacketChain stringPacketChain = new DefaultNonConnectorStringPacketChain();
 
-    public ClientHandler(SocketChannel socketChannel, File cachePath, Executor deliveryPool) throws IOException {
+    public ConnectorHandler(SocketChannel socketChannel, File cachePath) throws IOException {
         this.clientInfo = socketChannel.getRemoteAddress().toString();
         this.cachePath = cachePath;
-        this.deliveryPool = deliveryPool;
         setup(socketChannel);
     }
 
@@ -38,15 +36,14 @@ public class ClientHandler extends Connector {
     }
 
     /**
-     * 客户端退出连接
+     * 外部调用的退出操作
      */
     public void exit() {
         CloseUtils.close(this);
-        closeChain.handle(this, this);
     }
 
     /**
-     * 客户端关闭时的回调
+     * 内部监测到连接断开时回调
      * @param channel
      */
     @Override
@@ -83,17 +80,25 @@ public class ClientHandler extends Connector {
     }
 
     /**
-     * 责任链模式的调度
+     * 避免阻塞当前的数据读取线程调度，则单独交给另外一个调度线程进行数据调度
      * @param packet
      */
     private void deliveryStringPacket(StringReceivePacket packet) {
-        deliveryPool.execute(() -> {stringPacketChain.handle(this, packet);});
+        IoContext.get().getScheduler().delivery(() -> stringPacketChain.handle(this, packet));
     }
 
+    /**
+     * 获取当前链接的消息处理责任链链头
+     * @return
+     */
     public ConnectorStringPacketChain getStringPacketChain() {
         return stringPacketChain;
     }
 
+    /**
+     * 获取当前链接的关闭链接处理责任链链头
+     * @return
+     */
     public ConnectorCloseChain getCloseChain() {
         return closeChain;
     }

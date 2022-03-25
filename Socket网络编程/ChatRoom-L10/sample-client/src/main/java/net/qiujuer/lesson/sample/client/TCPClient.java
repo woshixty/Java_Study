@@ -2,6 +2,9 @@ package net.qiujuer.lesson.sample.client;
 
 import net.qiujuer.lesson.sample.client.bean.ServerInfo;
 import net.qiujuer.lesson.sample.foo.Foo;
+import net.qiujuer.lesson.sample.foo.handle.ConnectorHandler;
+import net.qiujuer.lesson.sample.foo.handle.ConnectorStringPacketChain;
+import net.qiujuer.library.clink.box.StringReceivePacket;
 import net.qiujuer.library.clink.core.Connector;
 import net.qiujuer.library.clink.core.Packet;
 import net.qiujuer.library.clink.core.ReceivePacket;
@@ -15,57 +18,20 @@ import java.nio.channels.SocketChannel;
 /**
  * TCP连接代理类
  */
-public class TCPClient extends Connector {
-    private final File cachePath;
+public class TCPClient extends ConnectorHandler {
 
     public TCPClient(SocketChannel socketChannel, File cachePath) throws IOException {
-        this.cachePath = cachePath;
-        setup(socketChannel);
+        super(socketChannel, cachePath);
+        getStringPacketChain().appendLast(new PrintStringPacketChain());
     }
 
-    /**
-     * 退出连接
-     */
-    public void exit() {
-        CloseUtils.close(this);
-    }
-
-    /**
-     * 连接关闭时
-     * @param channel
-     */
-    @Override
-    public void onChannelClosed(SocketChannel channel) {
-        super.onChannelClosed(channel);
-        System.out.println("连接已关闭, 无法读取数据");
-    }
-
-    /**
-     * 创建一个新的文件
-     * @return
-     */
-    @Override
-    protected File createNewReceiveFile() {
-        return Foo.createRandomTemp(cachePath);
-    }
-
-    /**
-     * 收到ReceivePacket
-     * @param packet
-     */
-    @Override
-    protected void onReceivedPacket(ReceivePacket packet) {
-        super.onReceivedPacket(packet);
-        // TODO: 2022/3/23 换成下方注释的
-        if (packet.type() == Packet.TYPE_MEMORY_STRING) {
-            String string = (java.lang.String) packet.entity();
-            System.out.println(key.toString() + ":" + string);
+    private class PrintStringPacketChain extends ConnectorStringPacketChain {
+        @Override
+        protected boolean consume(ConnectorHandler handler, StringReceivePacket stringReceivePacket) {
+            String str = stringReceivePacket.entity();
+            System.out.println(str);
+            return true;
         }
-        /**
-        if (packet.type() == Packet.TYPE_MEMORY_STRING) {
-            String string = (java.lang.String) packet.entity();
-        }
-         */
     }
 
     /**

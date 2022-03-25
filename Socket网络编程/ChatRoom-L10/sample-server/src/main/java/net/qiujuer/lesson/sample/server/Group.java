@@ -1,7 +1,7 @@
 package net.qiujuer.lesson.sample.server;
 
-import net.qiujuer.lesson.sample.server.handle.ClientHandler;
-import net.qiujuer.lesson.sample.server.handle.ConnectorStringPacketChain;
+import net.qiujuer.lesson.sample.foo.handle.ConnectorHandler;
+import net.qiujuer.lesson.sample.foo.handle.ConnectorStringPacketChain;
 import net.qiujuer.library.clink.box.StringReceivePacket;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class Group {
     private final String name;
     private final GroupMessageAdapter adapter;
     // 群成员
-    private final List<ClientHandler> members = new ArrayList<>();
+    private final List<ConnectorHandler> members = new ArrayList<>();
 
     public Group(String name, GroupMessageAdapter adapter) {
         this.name = name;
@@ -23,7 +23,7 @@ public class Group {
         return name;
     }
 
-    boolean addMember(ClientHandler handler) {
+    boolean addMember(ConnectorHandler handler) {
         synchronized (members) {
             if (!members.contains(handler)) {
                 members.add(handler);
@@ -36,7 +36,7 @@ public class Group {
         return false;
     }
 
-    boolean removeMember(ClientHandler handler) {
+    boolean removeMember(ConnectorHandler handler) {
         synchronized (members) {
             if (members.remove(handler)) {
                 handler.getStringPacketChain().remove(ForwardConnectorStringPacketChain.class);
@@ -49,9 +49,9 @@ public class Group {
 
     private class ForwardConnectorStringPacketChain extends ConnectorStringPacketChain {
         @Override
-        protected boolean consume(ClientHandler handler, StringReceivePacket stringReceivePacket) {
+        protected boolean consume(ConnectorHandler handler, StringReceivePacket stringReceivePacket) {
             synchronized (members) {
-                for (ClientHandler member : members) {
+                for (ConnectorHandler member : members) {
                     if (member == handler)
                         continue;
                     adapter.senMessageToClient(member, stringReceivePacket.entity());
@@ -62,6 +62,6 @@ public class Group {
     }
 
     interface GroupMessageAdapter {
-        void senMessageToClient(ClientHandler handler, String msg);
+        void senMessageToClient(ConnectorHandler handler, String msg);
     }
 }

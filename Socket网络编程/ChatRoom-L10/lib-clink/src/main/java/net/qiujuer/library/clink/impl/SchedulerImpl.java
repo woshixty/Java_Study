@@ -7,10 +7,14 @@ import java.util.concurrent.*;
 
 public class SchedulerImpl implements Scheduler {
     private final ScheduledExecutorService scheduledExecutorService;
+    private final ExecutorService deliveryPool;
 
     public SchedulerImpl(int poolSize) {
-        scheduledExecutorService = Executors.newScheduledThreadPool(poolSize, new IoSelectorProvider.IoProviderThreadFactory(
+        scheduledExecutorService = Executors.newScheduledThreadPool(poolSize, new NameableThreadFactory(
                 "Scheduler-Thread-"
+        ));
+        deliveryPool = Executors.newFixedThreadPool(4, new NameableThreadFactory(
+                "Delivery-Thread-"
         ));
     }
 
@@ -20,7 +24,13 @@ public class SchedulerImpl implements Scheduler {
     }
 
     @Override
+    public void delivery(Runnable runnable) {
+        deliveryPool.execute(runnable);
+    }
+
+    @Override
     public void close() throws IOException {
         scheduledExecutorService.shutdown();
+        deliveryPool.shutdown();
     }
 }

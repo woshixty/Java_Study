@@ -4,6 +4,7 @@ import net.qiujuer.lesson.sample.client.bean.ServerInfo;
 import net.qiujuer.lesson.sample.foo.Foo;
 import net.qiujuer.library.clink.core.IoContext;
 import net.qiujuer.library.clink.impl.IoSelectorProvider;
+import net.qiujuer.library.clink.impl.SchedulerImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +17,10 @@ public class ClientTest {
     public static void main(String[] args) throws IOException {
         File cachePath = Foo.getCacheDir("test");
 
-        IoContext.setup().ioProvider(new IoSelectorProvider()).start();
+        IoContext.setup()
+                .ioProvider(new IoSelectorProvider())
+                .scheduler(new SchedulerImpl(1))
+                .start();
 
         ServerInfo info = UDPSearcher.searchServer(10000);
         System.out.println("Server:" + info);
